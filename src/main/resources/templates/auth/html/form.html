@@ -1,0 +1,31 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:form="http://www.w3.org/1999/xhtml">
+   <body>
+    <form  th:action="@{/form}" th:object="${user}" method="post">
+        <table>
+            <tr>
+                <td>
+                    User Login:
+                </td>
+                <td>
+                    <input id="login" type="text" name="login" th:field="${user.login}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Password:
+                </td>
+                <td>
+                    <input id="password" type="password" name="password" th:field="${user.password}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit" name="save">sign in</button>
+                </td>
+                <td>
+                </td>
+            </tr>
+        </table>
+    </form>
+    </body>
+</html>
