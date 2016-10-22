@@ -21,6 +21,7 @@ public interface UserDao extends CrudRepository<User, Long> {
    * 
    * @param login the user email.
    */
-  public User findByLogin(String login);
+  public String findByLogin(String login);
+  Long countByLogin(String login);
 
 } // class UserDao
