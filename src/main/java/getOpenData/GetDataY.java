@@ -1,4 +1,4 @@
-package getData;
+package getOpenData;
 
 
 public class GetDataY {
