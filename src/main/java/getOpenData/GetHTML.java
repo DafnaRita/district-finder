@@ -3,10 +3,6 @@ package getOpenData;
 
 import com.google.gson.*;
 import getOpenData.model.Kindergarten;
-import getOpenData.model.Theatre;
-import getOpenData.model.Theatres;
-import getOpenData.deserialize.TheatresDeserializer;
-import getOpenData.deserialize.TheatreDeserializer;
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
