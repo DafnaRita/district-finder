@@ -1,6 +1,4 @@
-package auth.DAO;
-
-import com.sun.xml.internal.bind.v2.model.core.ID;
+package com.main.auth.DAO;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

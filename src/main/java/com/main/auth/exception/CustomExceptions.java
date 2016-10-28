@@ -1,4 +1,4 @@
-package auth.exception;
+package com.main.auth.exception;
 
 public class CustomExceptions extends RuntimeException {
 

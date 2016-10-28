@@ -1,8 +1,8 @@
-package auth.controllers;
+package com.main.auth.controllers;
 
-import auth.DAO.*;
+import com.main.auth.DAO.*;
 
-import auth.exception.CustomExceptions;
+import com.main.auth.exception.CustomExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +28,6 @@ public class UserController {
             return "User created! (id = " + user.getId() + ")";
         }
     }
-
 
     @RequestMapping("/delete")
     @ResponseBody

@@ -1,4 +1,4 @@
-package auth.DAO;
+package com.main.auth.DAO;
 
 import javax.transaction.Transactional;
 
