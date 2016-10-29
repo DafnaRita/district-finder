@@ -1,8 +1,9 @@
-package auth.main;
+package com.main.auth.main;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 
@@ -14,4 +15,5 @@ public class MainController extends WebMvcConfigurerAdapter {
     public String index() {
         return "redirect:/form";
     }
+
 }

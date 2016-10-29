@@ -1,4 +1,4 @@
-package auth.exception;
+package com.main.auth.exception;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,7 +10,7 @@ public class GlobalExceptionController {
     @ExceptionHandler(CustomExceptions.class)
     public ModelAndView handleCustomException(CustomExceptions ex) {
 
-        ModelAndView model = new ModelAndView("auth/exception/exception");
+        ModelAndView model = new ModelAndView("com/main/auth/exception/exception");
         model.addObject("errCode", ex.getErrCode());
         model.addObject("errMsg", ex.getErrMsg());
 
