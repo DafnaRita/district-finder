@@ -25,6 +25,9 @@ public class Company {
 //    @Column(name = "coordinateY")
     private double coordinateY;
 
+    @NotNull
+    private long id_type;
+
     public Company() {
     }
 
@@ -34,11 +37,6 @@ public class Company {
 
     public long getId() {
         return id;
-    }
-
-    @PersistenceContext
-    public void setId(long value) {
-        this.id = value;
     }
 
     public String getAddress() {
@@ -59,6 +57,11 @@ public class Company {
         this.coordinateX = coordinateX;
         this.coordinateY = coordinateY;
 
+    }
+
+    @PersistenceContext
+    public void setId(long value) {
+        this.id = value;
     }
 
     @PersistenceContext
