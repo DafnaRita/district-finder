@@ -55,9 +55,9 @@ public class DataYandex {
         }
 
         List<Company> companies = parseData(text);
-        for (Company x : companies) {
-            System.out.println(x.getName());
-        }
+//        for (Company x : companies) {
+//            System.out.println(x.getName());
+//        }
         return companies;
     }
 
