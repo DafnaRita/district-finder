@@ -23,10 +23,22 @@ public class DataYandex {
     private final static String accessKey = "70c1e792-340f-4dc0-acde-d0b8fa3ee8f9";
 
     public static void main(String[] args) {
-    getCompanies();
+        DataYandex dataYandex = new DataYandex();
+//        Point point = dataYandex.new Point(30.247547, 59.938406);
+//        Point point2 = dataYandex.new Point(30.300528, 59.942576);
+//        Point point3 = dataYandex.new Point(30.245081, 59.928965);
+//        Point point4 = dataYandex.new Point(30.286967, 59.924097);
+//        Point point5 = dataYandex.new Point(30.282224, 59.960753);
+//        System.out.println(dataYandex.filterCoor(point));
+//        System.out.println(dataYandex.filterCoor(point2));
+//        System.out.println(dataYandex.filterCoor(point3));
+//        System.out.println(dataYandex.filterCoor(point4));
+//        System.out.println(dataYandex.filterCoor(point5));
+//        filter(poligon);
+        dataYandex.getCompanies();
     }
 
-    public static List<Company> getCompanies(){
+    public List<Company> getCompanies() {
         String strUrl = "https://search-maps.yandex.ru/v1/";
         String queryText = "детский сад";
         String city = "Санкт-Петербург";
@@ -43,13 +55,13 @@ public class DataYandex {
         }
 
         List<Company> companies = parseData(text);
-        for (Company x:companies){
+        for (Company x : companies) {
             System.out.println(x.getName());
         }
         return companies;
     }
 
-    public static String getData(String urlToRead, String queryText, String city){
+    public String getData(String urlToRead, String queryText, String city) {
         URL url;
         HttpURLConnection conn;
         BufferedReader rd;
@@ -72,10 +84,9 @@ public class DataYandex {
         return result.toString();
     }
 
-    public static List<Company> parseData(String strJson) {
+    public List<Company> parseData(String strJson) {
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(strJson);
-
         JsonObject rootObject = jsonElement.getAsJsonObject(); // чтение главного объекта
 
         JsonArray jsonElements = rootObject.getAsJsonArray("features");
@@ -93,12 +104,72 @@ public class DataYandex {
             JsonArray geometry = childObject.getAsJsonObject("geometry").getAsJsonArray("coordinates");
             double[] coordinates = {geometry.get(0).getAsDouble(), geometry.get(1).getAsDouble()};
 
-            Company company = new Company(name, address, coordinates[0], coordinates[1]);
-
-            listComp.add(company);
-
-
+            Point point = new Point(coordinates[0], coordinates[1]);
+            if (filterCoor(point)) {
+                Company company = new Company(name, address, coordinates[0], coordinates[1]);
+                listComp.add(company);
+            }
         }
         return listComp;
+    }
+
+    /*
+    poligon have form as triangle
+     */
+    private boolean filterCoor(Point point0) {
+        double[][] poligon = {{30.198626, 59.904942}, {30.191440, 59.967553}, {30.312437, 59.944409}};
+        double res1 = calculateExpression(point0, new Point(poligon[0][0], poligon[0][1]), new Point(poligon[1][0], poligon[1][1]));
+        double res2 = calculateExpression(point0, new Point(poligon[1][0], poligon[1][1]), new Point(poligon[2][0], poligon[2][1]));
+        double res3 = calculateExpression(point0, new Point(poligon[2][0], poligon[2][1]), new Point(poligon[0][0], poligon[0][1]));
+
+        return (res1 > 0 & res2 > 0 & res3 > 0 | res1 < 0 & res2 < 0 & res3 < 0);
+    }
+
+    private double calculateExpression(Point point0, Point pointA, Point pointB) {
+        return (pointA.x - point0.x) * (pointB.y - pointA.y) - (pointB.x - pointA.x) * (pointA.y - point0.y);
+    }
+
+    /*
+    pointI = i
+    pointJ = i+1
+    it metod don't work/need fix
+    https://habrahabr.ru/post/125356/
+     */
+    boolean filterCoor2(double[] coordinates) {
+        double[][] poligon = {{0.1, 0.1}, {0.1, 0.5}, {0.6, 0.5}, {0.6, 0.1}};
+        Point pointI = new Point();
+        pointI.x = poligon[poligon.length - 1][0] - coordinates[0];
+        pointI.y = poligon[poligon.length - 1][1] - coordinates[1];
+
+        double sum = 0;
+
+        for (int j = 0; j < poligon.length; j++) {
+            Point pointJ = new Point();
+            pointJ.x = poligon[j][0] - coordinates[0];
+            pointJ.y = poligon[j][1] - coordinates[1];
+
+            double xy = pointJ.x * pointI.x + pointJ.y * pointI.y;
+            double del = pointI.x * pointJ.y - pointJ.x * pointI.y;
+
+            sum += Math.atan((pointI.x * pointI.x + pointI.y * pointI.y - xy) / del) +
+                    Math.atan((pointJ.x * pointJ.x + pointJ.y * pointJ.y - xy) / del);
+
+            pointI = pointJ;
+        }
+        boolean b = sum != 0;
+        return sum != 0;
+    }
+
+    class Point {
+        double x;
+        double y;
+
+        Point() {
+        }
+
+        Point(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
     }
 }
