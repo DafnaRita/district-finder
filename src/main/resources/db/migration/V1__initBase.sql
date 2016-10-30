@@ -13,7 +13,6 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `index2` (`login`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 CREATE TABLE `company` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
