@@ -15,12 +15,23 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
 public class DataYandex {
     private final static String accessKey = "70c1e792-340f-4dc0-acde-d0b8fa3ee8f9";
+    private int companyTypeId;
+    private String queryText;
+
+    public DataYandex(){}
+
+    public DataYandex(String queryText, int companyTypeId){
+        this.queryText = queryText;
+        this.companyTypeId = companyTypeId;
+    }
 
     public static void main(String[] args) {
         DataYandex dataYandex = new DataYandex();
@@ -40,7 +51,8 @@ public class DataYandex {
 
     public List<Company> getCompanies() {
         String strUrl = "https://search-maps.yandex.ru/v1/";
-        String queryText = "детский сад";
+//        queryText = "детский сад";
+//        companyTypeId = 7;
         String city = "Санкт-Петербург";
 //        System.out.println(getAnswer.getAnswer("http://data.gov.spb.ru/api/v1/datasets/"));
 //        System.out.println(getAnswer.getAnswer("http://data.gov.spb.ru/api/v1/datasets/18/versions/latest/data?per_page=100"));
@@ -56,7 +68,7 @@ public class DataYandex {
 
         List<Company> companies = parseData(text);
 //        for (Company x : companies) {
-//            System.out.println(x.getName());
+//            System.out.println(x.getName() + ": " + x.getAddress());
 //        }
         return companies;
     }
@@ -98,15 +110,23 @@ public class DataYandex {
             JsonObject proterties = childObject.getAsJsonObject("properties");
 
             JsonObject companyMetaData = proterties.getAsJsonObject("CompanyMetaData");
-            String address = companyMetaData.get("address").getAsString();
+            long id = companyMetaData.get("id").getAsLong();
             String name = companyMetaData.get("name").getAsString();
+            String address = companyMetaData.get("address").getAsString();
+            String url;
+            try {
+                url = companyMetaData.get("url").getAsString();
+            }catch (NullPointerException e){
+                url = "";
+            }
 
             JsonArray geometry = childObject.getAsJsonObject("geometry").getAsJsonArray("coordinates");
             double[] coordinates = {geometry.get(0).getAsDouble(), geometry.get(1).getAsDouble()};
 
             Point point = new Point(coordinates[0], coordinates[1]);
             if (filterCoor(point)) {
-                Company company = new Company(name, address, coordinates[0], coordinates[1]);
+                Date date = new Date(Calendar.getInstance().getTime().getTime());
+                Company company = new Company(id, name, address, coordinates[0], coordinates[1], companyTypeId, date, url);
                 listComp.add(company);
             }
         }
