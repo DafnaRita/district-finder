@@ -20,6 +20,7 @@ public class CompanyController {
         /*
         need rename variable
         why companyTypeDao.findAll().iterator() return 7 objects - parks
+        ask!!!!
          */
         String queryText = "";
         String queryTextEng = "hospitals";
