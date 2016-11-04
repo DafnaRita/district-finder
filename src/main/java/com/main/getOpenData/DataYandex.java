@@ -58,7 +58,7 @@ public class DataYandex {
 //        System.out.println(getAnswer.getAnswer("http://data.gov.spb.ru/api/v1/datasets/18/versions/latest/data?per_page=100"));
 //        String text = separateString(getAnswer.getAnswer("http://data.gov.spb.ru/api/v1/datasets/74/versions/latest/data?per_page=100"));
         String text = getData(strUrl, queryText, city);
-        Path path = FileSystems.getDefault().getPath("E:\\GitJava\\BitBucket\\NC\\evaluator-hous\\files\\data.txt");
+        Path path = FileSystems.getDefault().getPath("E:\\Uni\\NC\\district-finder\\files\\data.txt");
         try (FileWriter writer = new FileWriter(path.toString(), false)) {
             writer.write(text);
             writer.flush();
