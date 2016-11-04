@@ -22,10 +22,10 @@ public class CompanyController {
         why companyTypeDao.findAll().iterator() return 7 objects - parks
         ask!!!!
          */
-        String queryText = "";
+        String queryText = "Детский са";
         String queryTextEng = "hospitals";
         int companyTypeId = 6;
-//        Iterator<CompanyType> iterator = companyTypeDao.findAll().iterator();
+//      /*  Iterator<CompanyType> iterator = companyTypeDao.findAll().iterator();
 //        while (iterator.hasNext()) {
 //            CompanyType companyType = iterator.next();
 //            if (queryTextEng.equals(companyType.getName())) {
@@ -33,15 +33,15 @@ public class CompanyController {
 //                companyTypeId = companyType.getId();
 //                break;
 //            }
-//        }
+//        }*/
 
         DataYandex dataYandex = new DataYandex(queryText, companyTypeId);
         List<Company> list = dataYandex.getCompanies();
 
-        for (Company x : list) {
+        /*for (Company x : list) {
             companyDao.save(x);
-        }
-        return "getOpenData/html/admin";
+        }*/
+        return "success";
     }
 
     private String translate(String textEng) {
