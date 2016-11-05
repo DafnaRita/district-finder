@@ -1,5 +1,6 @@
 package com.main.getOpenData.DAO;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 public class CompanyType {
 
     @Id
+    @Column(name = "id_type")
     private int id;
 
     @NotNull

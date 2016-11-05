@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.main.getOpenData.DAO.Company;
+import com.main.getOpenData.DAO.CompanyDao;
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
@@ -16,19 +17,17 @@ import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class DataYandex {
     private final static String accessKey = "70c1e792-340f-4dc0-acde-d0b8fa3ee8f9";
     private int companyTypeId;
     private String queryText;
 
-    public DataYandex(){}
+    public DataYandex() {
+    }
 
-    public DataYandex(String queryText, int companyTypeId){
+    public DataYandex(String queryText, int companyTypeId) {
         this.queryText = queryText;
         this.companyTypeId = companyTypeId;
     }
@@ -116,7 +115,7 @@ public class DataYandex {
             String url;
             try {
                 url = companyMetaData.get("url").getAsString();
-            }catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 url = "";
             }
 
@@ -133,6 +132,27 @@ public class DataYandex {
         return listComp;
     }
 
+    public List<Company> getInRadius(Point centreCoor, Point upCoor, CompanyDao companyDao) {
+        double radius = upCoor.getY() - centreCoor.getY();
+        double radiusSquared = Math.pow(radius, 2);
+        double xLeft = centreCoor.getX() - radius;
+        double xRight = centreCoor.getX() + radius;
+        double yBottom = centreCoor.getY() - radius;
+        double yTop = centreCoor.getY() + radius;
+
+        Iterator<Company> iterator = companyDao.findByRadius(xLeft, xRight, yBottom, yTop).iterator();
+        List<Company> listCompany = new ArrayList<>(15);
+        while (iterator.hasNext()) {
+            Company company = iterator.next();
+            if (Math.pow(company.getCoordinateX()-centreCoor.getX(), 2) +
+                    Math.pow(company.getCoordinateY()-centreCoor.getY(), 2) < radiusSquared) {
+                listCompany.add(company);
+            }
+        }
+        listCompany.forEach(item -> System.out.println(item.getName()));
+        return listCompany;
+    }
+
     /*
     poligon have form as triangle
      */
@@ -146,7 +166,8 @@ public class DataYandex {
     }
 
     private double calculateExpression(Point point0, Point pointA, Point pointB) {
-        return (pointA.x - point0.x) * (pointB.y - pointA.y) - (pointB.x - pointA.x) * (pointA.y - point0.y);
+        return (pointA.getX() - point0.getX()) * (pointB.getY() - pointA.getY()) -
+                (pointB.getX() - pointA.getX()) * (pointA.getY() - point0.getY());
     }
 
     /*
@@ -158,21 +179,21 @@ public class DataYandex {
     boolean filterCoor2(double[] coordinates) {
         double[][] poligon = {{0.1, 0.1}, {0.1, 0.5}, {0.6, 0.5}, {0.6, 0.1}};
         Point pointI = new Point();
-        pointI.x = poligon[poligon.length - 1][0] - coordinates[0];
-        pointI.y = poligon[poligon.length - 1][1] - coordinates[1];
+        pointI.setX(poligon[poligon.length - 1][0] - coordinates[0]);
+        pointI.setY(poligon[poligon.length - 1][1] - coordinates[1]);
 
         double sum = 0;
 
         for (int j = 0; j < poligon.length; j++) {
             Point pointJ = new Point();
-            pointJ.x = poligon[j][0] - coordinates[0];
-            pointJ.y = poligon[j][1] - coordinates[1];
+            pointJ.setX(poligon[j][0] - coordinates[0]);
+            pointJ.setY(poligon[j][1] - coordinates[1]);
 
-            double xy = pointJ.x * pointI.x + pointJ.y * pointI.y;
-            double del = pointI.x * pointJ.y - pointJ.x * pointI.y;
+            double xy = pointJ.getX() * pointI.getX() + pointJ.getY() * pointI.getY();
+            double del = pointI.getX() * pointJ.getY() - pointJ.getX() * pointI.getY();
 
-            sum += Math.atan((pointI.x * pointI.x + pointI.y * pointI.y - xy) / del) +
-                    Math.atan((pointJ.x * pointJ.x + pointJ.y * pointJ.y - xy) / del);
+            sum += Math.atan((pointI.getX() * pointI.getX() + pointI.getY() * pointI.getY() - xy) / del) +
+                    Math.atan((pointJ.getX() * pointJ.getX() + pointJ.getY() * pointJ.getY() - xy) / del);
 
             pointI = pointJ;
         }
@@ -180,16 +201,4 @@ public class DataYandex {
         return sum != 0;
     }
 
-    class Point {
-        double x;
-        double y;
-
-        Point() {
-        }
-
-        Point(double x, double y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
 }

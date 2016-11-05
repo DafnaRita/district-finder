@@ -16,13 +16,12 @@ CREATE TABLE `company_type` (
   `id_type` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `description` varchar(300) DEFAULT NULL,
-  `id` int(11) NOT NULL,
   PRIMARY KEY (`id_type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
-INSERT INTO `company_type` VALUES (1,'parks',NULL,0),(2,'malls',NULL,0),
-(3,'schools',NULL,0),(4,'sportCenters',NULL,0),(5,'rest',NULL,0),
-(6,'hospitals',NULL,0),(7,'kindergarten',NULL,0);
+INSERT INTO `company_type` VALUES (1,'парк',NULL),(2,'торговый центр',NULL),
+(3,'школа',NULL),(4,'спортивный центр',NULL),(5,'отдых/развлечение',NULL),
+(6,'больница',NULL),(7,'детский сад',NULL);
 
 
 DROP TABLE IF EXISTS `company`;
