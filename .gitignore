@@ -1,5 +1,12 @@
+### Built files ###
 target/
+src/main/resources/static
+
+### Maven dependency###
 !.mvn/wrapper/maven-wrapper.jar
+
+### Frontend ###
+/frontend
 
 ### IntelliJ IDEA ###
 .idea

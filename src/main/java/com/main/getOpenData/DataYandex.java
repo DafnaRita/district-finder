@@ -131,6 +131,27 @@ public class DataYandex {
         }
         return listComp;
     }
+//
+//    public List<Company> getInRadius(Point centreCoor, Point upCoor, CompanyDao companyDao) {
+//        double radius = upCoor.getY() - centreCoor.getY();
+//        double radiusSquared = Math.pow(radius, 2);
+//        double xLeft = centreCoor.getX() - radius;
+//        double xRight = centreCoor.getX() + radius;
+//        double yBottom = centreCoor.getY() - radius;
+//        double yTop = centreCoor.getY() + radius;
+//
+//        Iterator<Company> iterator = companyDao.findByRadius(xLeft, xRight, yBottom, yTop).iterator();
+//        List<Company> listCompany = new ArrayList<>(15);
+//        while (iterator.hasNext()) {
+//            Company company = iterator.next();
+//            if (Math.pow(company.getCoordinateX()-centreCoor.getX(), 2) +
+//                    Math.pow(company.getCoordinateY()-centreCoor.getY(), 2) < radiusSquared) {
+//                listCompany.add(company);
+//            }
+//        }
+//        listCompany.forEach(item -> System.out.println(item.getName()));
+//        return listCompany;
+//    }
 
     public List<Company> getInRadius(Point centreCoor, Point upCoor, CompanyDao companyDao) {
         double radius = upCoor.getY() - centreCoor.getY();
