@@ -1,28 +1,19 @@
 package com.main.map.controllers;
 
 import com.google.gson.*;
-import com.google.gson.annotations.JsonAdapter;
 import com.main.getOpenData.DAO.Company;
 import com.main.getOpenData.DAO.CompanyDao;
-import com.main.getOpenData.DataYandex;
 import com.main.getOpenData.Point;
-import com.main.map.models.AreaInformation;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -113,7 +104,7 @@ public class MapRestController {
                 company.add("address", companyAddress);
                 JsonPrimitive companyName = new JsonPrimitive(com.getName());
                 company.add("name", companyName);
-                JsonPrimitive companyType = new JsonPrimitive(com.getId_type());
+                JsonPrimitive companyType = new JsonPrimitive(com.getIdType());
                 company.add("type", companyType);
                 JsonArray companyCoordinates = new JsonArray();//coordinates
                 companyCoordinates.add(com.getCoordinateY());
