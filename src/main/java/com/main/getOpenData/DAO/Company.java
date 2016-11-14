@@ -10,6 +10,7 @@ import java.util.Date;
 public class Company {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
 
     @NotNull
@@ -20,15 +21,18 @@ public class Company {
     private String address;
 
     @NotNull
-    @Column(name = "coordinateX")
-    private double coordinateX;
+    @Column(name = "lng")
+    private double longitude;
 
     @NotNull
-    @Column(name = "coordinateY")
-    private double coordinateY;
+    @Column(name = "lat")
+    private double latitude;
 
     @NotNull
-    private int id_type;
+    private int idType;
+
+    @Column(name = "parent_id")
+    private int parentId;
 
     @NotNull
     @Temporal(TemporalType.DATE)
@@ -37,19 +41,35 @@ public class Company {
     @NotNull
     private String url;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "work_time")
+    private String workTime;
+
+    @Column(name = "additional_info")
+    private String additionalInfo;
+
+    @Column(name = "id_from_source")
+    private long idFromSource;
+
     public Company() {
     }
 
-    public Company(long id, String name, String address, double coordinateX, double coordinateY,
-                   int id_type, Date date, String url) {
-        this.id = id;
+    public Company(String name, String address, double longitude, double latitude, int idType, int parentId,
+                   Date date, String url, String phoneNumber, String workTime, String additionalInfo, long idFromSource) {
         this.name = name;
         this.address = address;
-        this.coordinateX = coordinateX;
-        this.coordinateY = coordinateY;
-        this.id_type = id_type;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.idType = idType;
+        this.parentId = parentId;
         this.date = date;
         this.url = url;
+        this.phoneNumber = phoneNumber;
+        this.workTime = workTime;
+        this.additionalInfo = additionalInfo;
+        this.idFromSource = idFromSource;
     }
 
     public String getName() {
@@ -64,23 +84,45 @@ public class Company {
         return address;
     }
 
-    public double getCoordinateX() {
-        return coordinateX;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public double getCoordinateY() {
-        return coordinateY;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public int getId_type() {
-        return id_type;
+    public int getIdType() {
+        return idType;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public String getUrl(){return url;}
+    public String getUrl() {
+        return url;
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getWorkTime() {
+        return workTime;
+    }
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public long getIdFromSource() {
+        return idFromSource;
+    }
 
     @PersistenceContext
     public void setId(long value) {
@@ -98,18 +140,23 @@ public class Company {
     }
 
     @PersistenceContext
-    public void setCoordinateX(double coordinateX) {
-        this.coordinateX = coordinateX;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     @PersistenceContext
-    public void setCoordinateY(double coordinateY) {
-        this.coordinateY = coordinateY;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
     @PersistenceContext
-    public void setId_type(int id_type) {
-        this.id_type = id_type;
+    public void setIdType(int idType) {
+        this.idType = idType;
+    }
+
+    @PersistenceContext
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
     }
 
     @PersistenceContext
@@ -120,6 +167,26 @@ public class Company {
     @PersistenceContext
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    @PersistenceContext
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
+
+    @PersistenceContext
+    public void setWorkTime(String workTime) {
+        this.workTime = workTime;
+    }
+
+    @PersistenceContext
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    @PersistenceContext
+    public void setIdFromSource(long idFromSource) {
+        this.idFromSource = idFromSource;
     }
 }
 
