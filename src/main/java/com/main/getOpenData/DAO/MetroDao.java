@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface MetroDao extends CrudRepository<Metro,Long> {
 
-//    @Query(value = "select m from metro m")
+//    @Query(value = "select m from Metro m")
 //    List<Metro> ();
 }

@@ -9,18 +9,18 @@ import java.util.ArrayList;
  */
 
 public class AreaQuery {
-    private float[] coordinatesCurrent;
+    private double[] coordinatesCurrent;
     private String district;
     private int radius;
-    private float[] northPoint;
+    private double[] northPoint;
     private ArrayList<EstimatedArea> estimateParams = new ArrayList<>();
 
     public AreaQuery() {
     }
 
-    public AreaQuery(float[] coordinatesCurrent,
+    public AreaQuery(double[] coordinatesCurrent,
                      String district, int radius,
-                     float[] northPoint, ArrayList<EstimatedArea> estimateParams) {
+                     double[] northPoint, ArrayList<EstimatedArea> estimateParams) {
         this.coordinatesCurrent = coordinatesCurrent;
         this.district = district;
         this.radius = radius;
@@ -31,13 +31,13 @@ public class AreaQuery {
     public void setDistrict(String district) {
         this.district = district;
     }
-    public void setCoordinates(float[] coordinates) {
+    public void setCoordinates(double[] coordinates) {
         this.coordinatesCurrent = coordinates;
     }
     public void setRadius(int radius) {
         this.radius = radius;
     }
-    public void setNorthPoint(float[] northPoint) {
+    public void setNorthPoint(double[] northPoint) {
         this.northPoint = northPoint;
     }
     public void setEstimateParams(ArrayList<EstimatedArea> estimateParams) {
@@ -47,13 +47,13 @@ public class AreaQuery {
     public String getDistrict() {
         return this.district;
     }
-    public float[] getCoordinates() {
+    public double[] getCoordinates() {
         return this.coordinatesCurrent;
     }
     public int getRadius() {
         return this.radius;
     }
-    public float[] getNorthPoint() {
+    public double[] getNorthPoint() {
         return this.northPoint;
     }
     public EstimatedArea getEstimateParam(int index) {
