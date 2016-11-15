@@ -179,19 +179,19 @@ public class DataYandex {
     }
 //
 //    public List<Company> getInRadius(Point centreCoor, Point upCoor, CompanyDao companyDao) {
-//        double radius = upCoor.getY() - centreCoor.getY();
+//        double radius = upCoor.getLatitude() - centreCoor.getLatitude();
 //        double radiusSquared = Math.pow(radius, 2);
-//        double xLeft = centreCoor.getX() - radius;
-//        double xRight = centreCoor.getX() + radius;
-//        double yBottom = centreCoor.getY() - radius;
-//        double yTop = centreCoor.getY() + radius;
+//        double xLeft = centreCoor.getLongitude() - radius;
+//        double xRight = centreCoor.getLongitude() + radius;
+//        double yBottom = centreCoor.getLatitude() - radius;
+//        double yTop = centreCoor.getLatitude() + radius;
 //
 //        Iterator<Company> iterator = companyDao.findByRadius(xLeft, xRight, yBottom, yTop).iterator();
 //        List<Company> listCompany = new ArrayList<>(15);
 //        while (iterator.hasNext()) {
 //            Company company = iterator.next();
-//            if (Math.pow(company.getLongitude()-centreCoor.getX(), 2) +
-//                    Math.pow(company.getLatitude()-centreCoor.getY(), 2) < radiusSquared) {
+//            if (Math.pow(company.getLongitude()-centreCoor.getLongitude(), 2) +
+//                    Math.pow(company.getLatitude()-centreCoor.getLatitude(), 2) < radiusSquared) {
 //                listCompany.add(company);
 //            }
 //        }
@@ -200,19 +200,19 @@ public class DataYandex {
 //    }
 
 //    public List<Company> getInRadius(Point centreCoor, Point upCoor, CompanyDao companyDao) {
-//        double radius = upCoor.getY() - centreCoor.getY();
+//        double radius = upCoor.getLatitude() - centreCoor.getLatitude();
 //        double radiusSquared = Math.pow(radius, 2);
-//        double xLeft = centreCoor.getX() - radius;
-//        double xRight = centreCoor.getX() + radius;
-//        double yBottom = centreCoor.getY() - radius;
-//        double yTop = centreCoor.getY() + radius;
+//        double xLeft = centreCoor.getLongitude() - radius;
+//        double xRight = centreCoor.getLongitude() + radius;
+//        double yBottom = centreCoor.getLatitude() - radius;
+//        double yTop = centreCoor.getLatitude() + radius;
 //
 //        Iterator<Company> iterator = companyDao.findByRadius(xLeft, xRight, yBottom, yTop).iterator();
 //        List<Company> listCompany = new ArrayList<>(15);
 //        while (iterator.hasNext()) {
 //            Company company = iterator.next();
-//            if (Math.pow(company.getLongitude()-centreCoor.getX(), 2) +
-//                    Math.pow(company.getLatitude()-centreCoor.getY(), 2) < radiusSquared) {
+//            if (Math.pow(company.getLongitude()-centreCoor.getLongitude(), 2) +
+//                    Math.pow(company.getLatitude()-centreCoor.getLatitude(), 2) < radiusSquared) {
 //                listCompany.add(company);
 //            }
 //        }
@@ -233,8 +233,8 @@ public class DataYandex {
     }
 
     private double calculateExpression(Point point0, Point pointA, Point pointB) {
-        return (pointA.getX() - point0.getX()) * (pointB.getY() - pointA.getY()) -
-                (pointB.getX() - pointA.getX()) * (pointA.getY() - point0.getY());
+        return (pointA.getLongitude() - point0.getLongitude()) * (pointB.getLatitude() - pointA.getLatitude()) -
+                (pointB.getLongitude() - pointA.getLongitude()) * (pointA.getLatitude() - point0.getLatitude());
     }
 
     /*
@@ -246,21 +246,21 @@ public class DataYandex {
     boolean filterCoor2(double[] coordinates) {
         double[][] poligon = {{0.1, 0.1}, {0.1, 0.5}, {0.6, 0.5}, {0.6, 0.1}};
         Point pointI = new Point();
-        pointI.setX(poligon[poligon.length - 1][0] - coordinates[0]);
-        pointI.setY(poligon[poligon.length - 1][1] - coordinates[1]);
+        pointI.setLongitude(poligon[poligon.length - 1][0] - coordinates[0]);
+        pointI.setLatitude(poligon[poligon.length - 1][1] - coordinates[1]);
 
         double sum = 0;
 
         for (int j = 0; j < poligon.length; j++) {
             Point pointJ = new Point();
-            pointJ.setX(poligon[j][0] - coordinates[0]);
-            pointJ.setY(poligon[j][1] - coordinates[1]);
+            pointJ.setLongitude(poligon[j][0] - coordinates[0]);
+            pointJ.setLatitude(poligon[j][1] - coordinates[1]);
 
-            double xy = pointJ.getX() * pointI.getX() + pointJ.getY() * pointI.getY();
-            double del = pointI.getX() * pointJ.getY() - pointJ.getX() * pointI.getY();
+            double xy = pointJ.getLongitude() * pointI.getLongitude() + pointJ.getLatitude() * pointI.getLatitude();
+            double del = pointI.getLongitude() * pointJ.getLatitude() - pointJ.getLongitude() * pointI.getLatitude();
 
-            sum += Math.atan((pointI.getX() * pointI.getX() + pointI.getY() * pointI.getY() - xy) / del) +
-                    Math.atan((pointJ.getX() * pointJ.getX() + pointJ.getY() * pointJ.getY() - xy) / del);
+            sum += Math.atan((pointI.getLongitude() * pointI.getLongitude() + pointI.getLatitude() * pointI.getLatitude() - xy) / del) +
+                    Math.atan((pointJ.getLongitude() * pointJ.getLongitude() + pointJ.getLatitude() * pointJ.getLatitude() - xy) / del);
 
             pointI = pointJ;
         }

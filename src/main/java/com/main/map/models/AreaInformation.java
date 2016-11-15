@@ -7,15 +7,15 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.main.getOpenData.DAO.Company;
 import com.main.getOpenData.DAO.CompanyDao;
+import com.main.getOpenData.DAO.Metro;
+import com.main.getOpenData.DAO.MetroDao;
 import com.main.getOpenData.Point;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class AreaInformation {
     private final int TYPES_NUMBER = 7;
@@ -25,13 +25,14 @@ public class AreaInformation {
     private int[] typeIN;
     private double estimate;
 
-    public String requestHandling(String jsonQueryStr, CompanyDao companyDao) {
+    public String requestHandling(String jsonQueryStr, CompanyDao companyDao, MetroDao metroDao) {
         parsingJsonQueryStr(jsonQueryStr);
         calculateEstimate();
-        return createAnswerJson(companyDao);
+        return createAnswerJson(companyDao, metroDao);
     }
 
     private void parsingJsonQueryStr(String jsonQueryStr) {
+        System.out.println("in parsingJsonQueryStr");
         System.out.println("Json:" + jsonQueryStr);
         /*JSONObject outputJsonObj = new JSONObject();
         outputJsonObj.put("output", output);
@@ -40,44 +41,48 @@ public class AreaInformation {
 
         JsonObject rootObject = (new JsonParser()).parse(jsonQueryStr).getAsJsonObject(); // чтение главного объекта
 
+        System.out.println("tut");
         JsonArray geometry = rootObject.getAsJsonObject("target").getAsJsonArray("coordinates");
         coordinates = new double[]{geometry.get(0).getAsDouble(), geometry.get(1).getAsDouble()};// координаты клика
         geometry = rootObject.getAsJsonArray("northPoint");
         coordinatesRadius = new double[]{geometry.get(0).getAsDouble(), geometry.get(1).getAsDouble()};// координаты радиуса клика
-
-        //double radius = rootObject.getAsJsonPrimitive("radius").getAsDouble();// радиус круга вокруг клика
+        System.out.println("tut2");
+        double radius = rootObject.getAsJsonPrimitive("radius").getAsDouble();// радиус круга вокруг клика
 
         JsonArray estimateParams = rootObject.getAsJsonArray("estimateParams");
         Iterator it = estimateParams.iterator();
         JsonObject param;
         StringBuilder typeINstr = new StringBuilder();
         importances = new double[TYPES_NUMBER];
-        while (it.hasNext()) {
-            param = (JsonObject) it.next();
-            int type = param.getAsJsonPrimitive("type").getAsInt();
-            double importance = param.getAsJsonPrimitive("importance").getAsDouble();
-            importances[type] = importance;
-            if (importance > 0) typeINstr.append(type).append(" ");
-        }
+//        while (it.hasNext()) {
+//            param = (JsonObject) it.next();
+//            int type = param.getAsJsonPrimitive("type").getAsInt();
+//            double importance = param.getAsJsonPrimitive("importance").getAsDouble();
+//            importances[type] = importance;
+//            if (importance > 0) typeINstr.append(type).append(" ");
+//        }
 
-        if (!typeINstr.toString().equals("")) {
-            String[] str = typeINstr.toString().split(" ");
-            typeIN = new int[str.length];//       в БД нумерация типов начинается с 1:
-            for (int i = 0; i < str.length; i++) typeIN[i] = Integer.parseInt(str[i]) + 1;
-        }
+//        if (!typeINstr.toString().equals("")) {
+//            String[] str = typeINstr.toString().split(" ");
+//            typeIN = new int[str.length];//       в БД нумерация типов начинается с 1:
+//            for (int i = 0; i < str.length; i++) typeIN[i] = Integer.parseInt(str[i]) + 1;
+//        }
+        System.out.println("tut3");
     }
 
     private void calculateEstimate() {
+        System.out.println("in calculateEstimate");
         double result = 0;
         for (double x : importances) {
             result += x;
         }
         result /= importances.length;
-        result = Math.round(result*100);
-        estimate = result/100;
+        result = Math.round(result * 100);
+        estimate = result / 100;
     }
 
-    private String createAnswerJson(CompanyDao companyDao) {
+    private String createAnswerJson(CompanyDao companyDao, MetroDao metroDao) {
+        System.out.println("in createAnswerJson");
         JsonObject answerRootObject = new JsonObject();
         answerRootObject.add("estimate", new JsonPrimitive(estimate));
 
@@ -89,6 +94,8 @@ public class AreaInformation {
         districtRating.add("parks_availability", new JsonPrimitive(1));
         answerRootObject.add("district-rating", districtRating);
 
+
+        Deque<Metro> listMetro = getTwoMetro(metroDao);
         JsonArray arrayMetro = new JsonArray();
         JsonObject metro = new JsonObject();
         metro.add("name", new JsonPrimitive("Невский проспект"));
@@ -199,24 +206,54 @@ public class AreaInformation {
 
 
     private List<Company> getInRadius(Point centreCoor, Point upCoor, int[] typeIN, CompanyDao companyDao) {
-        double radius = upCoor.getY() - centreCoor.getY();
+        double radius = upCoor.getLatitude() - centreCoor.getLatitude();
         double radiusSquared = Math.pow(radius, 2);
-        double xLeft = centreCoor.getX() - radius;
-        double xRight = centreCoor.getX() + radius;
-        double yBottom = centreCoor.getY() - radius;
-        double yTop = centreCoor.getY() + radius;
+        double xLeft = centreCoor.getLongitude() - radius;
+        double xRight = centreCoor.getLongitude() + radius;
+        double yBottom = centreCoor.getLatitude() - radius;
+        double yTop = centreCoor.getLatitude() + radius;
 
         Iterator<Company> iterator = companyDao.findByRadius(xLeft, xRight, yBottom, yTop, typeIN).iterator();
         List<Company> listCompany = new ArrayList<>(15);
         while (iterator.hasNext()) {
             Company company = iterator.next();
-            if (Math.pow(company.getLongitude() - centreCoor.getX(), 2) +
-                    Math.pow(company.getLatitude() - centreCoor.getY(), 2) < radiusSquared) {
+            if (Math.pow(company.getLongitude() - centreCoor.getLongitude(), 2) +
+                    Math.pow(company.getLatitude() - centreCoor.getLatitude(), 2) < radiusSquared) {
                 listCompany.add(company);
             }
         }
         // listCompany.forEach(item -> System.out.println(item.getName()));
         return listCompany;
+    }
+
+    // посмотреть, есть ли алгоритм подсчета именно реального расстояния
+    private Deque<Metro> getTwoMetro(MetroDao metroDao) {
+        System.out.println("in getTwoMetro");
+        Deque<Metro> result = new LinkedList<>();
+        result.add(new Metro());
+        result.add(new Metro());
+        double leastDistance = Double.MAX_VALUE;
+        double distance = Double.MAX_VALUE;
+
+        for (Metro node : metroDao.findAll()) {
+
+            double curentDistance = Math.pow(node.getLongitude() - coordinates[1], 2) +
+                    Math.pow(node.getLatitude() - coordinates[0], 2);
+            if (curentDistance < leastDistance) {
+                distance = leastDistance;
+                result.removeLast();
+                leastDistance = curentDistance;
+                result.addFirst(node);
+            } else if (curentDistance < distance) {
+                distance = curentDistance;
+                result.removeLast();
+                result.addLast(node);
+            }
+//            System.out.println(node.getName()+ " cDistance: " + curentDistance + " leastDistance: " + leastDistance);
+        }
+        System.out.println();
+        result.forEach(item -> System.out.println(item.getName()));
+        return result;
     }
 
 }
