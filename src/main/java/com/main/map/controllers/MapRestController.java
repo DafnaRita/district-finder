@@ -25,9 +25,8 @@ public class MapRestController {
     }
 
     @PostMapping(value = "/get_query")
-    public void PostAreaInformation(@RequestBody String jsonQueryStr) {
+    public String  PostAreaInformation(@RequestBody String jsonQueryStr) {
         AreaInformation areaInformation = new AreaInformation();
-        areaInformation.requestHandling(jsonQueryStr, companyDao, metroDao);
+        return areaInformation.requestHandling(jsonQueryStr, companyDao, metroDao);
     }
-
 }

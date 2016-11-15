@@ -4,11 +4,9 @@ package com.main.map.models;
 import com.google.gson.*;
 import com.main.getOpenData.DAO.Company;
 import com.main.getOpenData.DAO.CompanyDao;
-import com.main.getOpenData.DAO.Metro;
 import com.main.getOpenData.DAO.MetroDao;
 import com.main.getOpenData.Point;
-import com.main.map.models.JSONclasses.AreaQuery;
-import com.main.map.models.JSONclasses.EstimatedArea;
+import com.main.map.models.JSONclasses.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -20,10 +18,11 @@ public class AreaInformation {
     private double estimate;
     private AreaQuery areaQuery;
 
-    public void requestHandling(String jsonQueryStr, CompanyDao companyDao) {
+    public String requestHandling(String jsonQueryStr, CompanyDao companyDao,
+                                MetroDao metroDao) {
         this.areaQuery = parsingJsonQueryStr(jsonQueryStr);
         this.estimate = calculateEstimate();
-        //return createAnswerJson(companyDao);
+        return createAnswerJson(companyDao);
     }
 
     public AreaQuery parsingJsonQueryStr(String jsonQueryStr) {
@@ -45,13 +44,32 @@ public class AreaInformation {
        int estimate = 5;
        return estimate;
     }
-/*
+
     private String createAnswerJson(CompanyDao companyDao) {
-
-
-        return ;
+        int estimate = 5;
+        String address = "Test Address 5,LOL";
+        DistrictRating districtRating = new DistrictRating(1,2,3,4,5);
+        ArrayList<Metro> Metro = new ArrayList<>();
+        Metro metro1 = new Metro("Невский проспект", 4, 2);
+        Metro metro2 = new Metro("Петроградка", 3, 2);
+        Metro.add(metro1);
+        Metro.add(metro2);
+        double[] coordinates = new double[2];
+        coordinates[0] = 59.3;
+        coordinates[1] = 31.4;
+        ArrayList<Infrastructure> infrastructure = new ArrayList<>();
+        Infrastructure infrastructure1 = new Infrastructure("Санкт-Петербург",
+                "НОУ Международная",3,coordinates);
+        Infrastructure infrastructure2 = new Infrastructure("Санкт-Петербург2",
+                "НОУ Международная2",2,coordinates);
+        infrastructure.add(infrastructure1);
+        infrastructure.add(infrastructure2);
+        AreaResponse areaResponse = new AreaResponse(estimate,address,
+                districtRating, Metro,infrastructure);
+        Gson gson = new GsonBuilder().create();
+        System.out.println(gson.toJson(areaResponse));
+        return gson.toJson(areaResponse);
     }
-*/
 
     private String getYandexGeocodeJSON(double[] coordinates) {
         URL url;
@@ -116,15 +134,15 @@ public class AreaInformation {
     }
 
     // посмотреть, есть ли алгоритм подсчета именно реального расстояния
-    private Deque<Metro> getTwoMetro(MetroDao metroDao) {
+    private Deque<com.main.getOpenData.DAO.Metro> getTwoMetro(MetroDao metroDao) {
         System.out.println("in getTwoMetro");
-        Deque<Metro> result = new LinkedList<>();
-        result.add(new Metro());
-        result.add(new Metro());
+        Deque<com.main.getOpenData.DAO.Metro> result = new LinkedList<>();
+        result.add(new com.main.getOpenData.DAO.Metro());
+        result.add(new com.main.getOpenData.DAO.Metro());
         double leastDistance = Double.MAX_VALUE;
         double distance = Double.MAX_VALUE;
 
-        for (Metro node : metroDao.findAll()) {
+        for (com.main.getOpenData.DAO.Metro node : metroDao.findAll()) {
                  /*current!*/
             double curentDistance = Math.pow(node.getLongitude() -
                     this.areaQuery.getCoordinates()[1], 2) +
