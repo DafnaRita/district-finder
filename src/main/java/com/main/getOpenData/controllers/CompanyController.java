@@ -1,9 +1,6 @@
 package com.main.getOpenData.controllers;
 
-import com.main.getOpenData.DAO.Company;
-import com.main.getOpenData.DAO.CompanyDao;
-import com.main.getOpenData.DAO.CompanyType;
-import com.main.getOpenData.DAO.CompanyTypeDao;
+import com.main.getOpenData.DAO.*;
 import com.main.getOpenData.DataYandex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,10 +12,18 @@ import java.util.List;
 @Controller
 public class CompanyController {
 
+    @RequestMapping(value = "/metro")
+    public String metro() {
+        for (Metro node : metroDao.findAll()) {
+            System.out.println(node.getName());
+        }
+        return "success";
+    }
+
     @RequestMapping(value = "/kind")
     public String kind() {
         String queryText = "детский сад";
-        DataYandex dataYandex = new DataYandex(queryText, companyDao,companyTypeDao);
+        DataYandex dataYandex = new DataYandex(queryText, companyDao, companyTypeDao);
         boolean success = dataYandex.writeDataToBD();
 
 //        String queryText = "Детский са";
@@ -60,4 +65,7 @@ public class CompanyController {
 
     @Autowired
     private CompanyTypeDao companyTypeDao;
+
+    @Autowired
+    private MetroDao metroDao;
 }

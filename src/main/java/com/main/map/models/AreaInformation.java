@@ -4,6 +4,8 @@ package com.main.map.models;
 import com.google.gson.*;
 import com.main.getOpenData.DAO.Company;
 import com.main.getOpenData.DAO.CompanyDao;
+import com.main.getOpenData.DAO.Metro;
+import com.main.getOpenData.DAO.MetroDao;
 import com.main.getOpenData.Point;
 import com.main.map.models.JSONclasses.AreaQuery;
 
@@ -11,9 +13,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class AreaInformation {
     private final int TYPES_NUMBER = 7;
@@ -23,11 +23,10 @@ public class AreaInformation {
     private int[] typeIN;
     private double estimate;
 
-    public void requestHandling(String jsonQueryStr, CompanyDao companyDao) {
-        System.out.println("1");
+    public String requestHandling(String jsonQueryStr, CompanyDao companyDao, MetroDao metroDao) {
         parsingJsonQueryStr(jsonQueryStr);
-        //calculateEstimate();
-        //return createAnswerJson(companyDao);
+        calculateEstimate();
+        return createAnswerJson(companyDao, metroDao);
     }
 
     public void parsingJsonQueryStr(String jsonQueryStr) {
@@ -46,18 +45,19 @@ public class AreaInformation {
     }
 
     private void calculateEstimate() {
-        System.out.println("2");
+        System.out.println("in calculateEstimate");
         double result = 0;
         for (double x : importances) {
             result += x;
         }
         result /= importances.length;
-        result = Math.round(result*100);
-        estimate = result/100;
+        result = Math.round(result * 100);
+        estimate = result / 100;
     }
 
-    private String createAnswerJson(CompanyDao companyDao) {
-        System.out.println("3");
+
+    private String createAnswerJson(CompanyDao companyDao, MetroDao metroDao) {
+        System.out.println("in createAnswerJson");
         JsonObject answerRootObject = new JsonObject();
         answerRootObject.add("estimate", new JsonPrimitive(estimate));
 
@@ -69,6 +69,8 @@ public class AreaInformation {
         districtRating.add("parks_availability", new JsonPrimitive(1));
         answerRootObject.add("district-rating", districtRating);
 
+
+        Deque<Metro> listMetro = getTwoMetro(metroDao);
         JsonArray arrayMetro = new JsonArray();
         JsonObject metro = new JsonObject();
         metro.add("name", new JsonPrimitive("Невский проспект"));
@@ -179,24 +181,54 @@ public class AreaInformation {
 
 
     private List<Company> getInRadius(Point centreCoor, Point upCoor, int[] typeIN, CompanyDao companyDao) {
-        double radius = upCoor.getY() - centreCoor.getY();
+        double radius = upCoor.getLatitude() - centreCoor.getLatitude();
         double radiusSquared = Math.pow(radius, 2);
-        double xLeft = centreCoor.getX() - radius;
-        double xRight = centreCoor.getX() + radius;
-        double yBottom = centreCoor.getY() - radius;
-        double yTop = centreCoor.getY() + radius;
+        double xLeft = centreCoor.getLongitude() - radius;
+        double xRight = centreCoor.getLongitude() + radius;
+        double yBottom = centreCoor.getLatitude() - radius;
+        double yTop = centreCoor.getLatitude() + radius;
 
         Iterator<Company> iterator = companyDao.findByRadius(xLeft, xRight, yBottom, yTop, typeIN).iterator();
         List<Company> listCompany = new ArrayList<>(15);
         while (iterator.hasNext()) {
             Company company = iterator.next();
-            if (Math.pow(company.getLongitude() - centreCoor.getX(), 2) +
-                    Math.pow(company.getLatitude() - centreCoor.getY(), 2) < radiusSquared) {
+            if (Math.pow(company.getLongitude() - centreCoor.getLongitude(), 2) +
+                    Math.pow(company.getLatitude() - centreCoor.getLatitude(), 2) < radiusSquared) {
                 listCompany.add(company);
             }
         }
         // listCompany.forEach(item -> System.out.println(item.getName()));
         return listCompany;
+    }
+
+    // посмотреть, есть ли алгоритм подсчета именно реального расстояния
+    private Deque<Metro> getTwoMetro(MetroDao metroDao) {
+        System.out.println("in getTwoMetro");
+        Deque<Metro> result = new LinkedList<>();
+        result.add(new Metro());
+        result.add(new Metro());
+        double leastDistance = Double.MAX_VALUE;
+        double distance = Double.MAX_VALUE;
+
+        for (Metro node : metroDao.findAll()) {
+
+            double curentDistance = Math.pow(node.getLongitude() - coordinates[1], 2) +
+                    Math.pow(node.getLatitude() - coordinates[0], 2);
+            if (curentDistance < leastDistance) {
+                distance = leastDistance;
+                result.removeLast();
+                leastDistance = curentDistance;
+                result.addFirst(node);
+            } else if (curentDistance < distance) {
+                distance = curentDistance;
+                result.removeLast();
+                result.addLast(node);
+            }
+//            System.out.println(node.getName()+ " cDistance: " + curentDistance + " leastDistance: " + leastDistance);
+        }
+        System.out.println();
+        result.forEach(item -> System.out.println(item.getName()));
+        return result;
     }
 
 }

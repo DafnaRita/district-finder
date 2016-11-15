@@ -2,30 +2,30 @@ package com.main.getOpenData;
 
 
 public class Point {
-    private double x;
-    private double y;
+    private double longitude;
+    private double latitude;
 
     Point() {
     }
 
-    public Point(double x, double y) {
-        this.x = x;
-        this.y = y;
+    public Point(double longitude, double latitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
-    public double getX() {
-        return x;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public double getY() {
-        return y;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 }
