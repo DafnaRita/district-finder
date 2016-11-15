@@ -1,15 +1,13 @@
 package com.main.map.models;
 
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import com.main.getOpenData.DAO.Company;
 import com.main.getOpenData.DAO.CompanyDao;
 import com.main.getOpenData.DAO.Metro;
 import com.main.getOpenData.DAO.MetroDao;
 import com.main.getOpenData.Point;
+import com.main.map.models.JSONclasses.AreaQuery;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -31,43 +29,19 @@ public class AreaInformation {
         return createAnswerJson(companyDao, metroDao);
     }
 
-    private void parsingJsonQueryStr(String jsonQueryStr) {
-        System.out.println("in parsingJsonQueryStr");
-        System.out.println("Json:" + jsonQueryStr);
-        /*JSONObject outputJsonObj = new JSONObject();
-        outputJsonObj.put("output", output);
-
-        return outputJsonObj.toString();*/
-
-        JsonObject rootObject = (new JsonParser()).parse(jsonQueryStr).getAsJsonObject(); // чтение главного объекта
-
-        System.out.println("tut");
-        JsonArray geometry = rootObject.getAsJsonObject("target").getAsJsonArray("coordinates");
-        coordinates = new double[]{geometry.get(0).getAsDouble(), geometry.get(1).getAsDouble()};// координаты клика
-        geometry = rootObject.getAsJsonArray("northPoint");
-        coordinatesRadius = new double[]{geometry.get(0).getAsDouble(), geometry.get(1).getAsDouble()};// координаты радиуса клика
-        System.out.println("tut2");
-        double radius = rootObject.getAsJsonPrimitive("radius").getAsDouble();// радиус круга вокруг клика
-
-        JsonArray estimateParams = rootObject.getAsJsonArray("estimateParams");
-        Iterator it = estimateParams.iterator();
-        JsonObject param;
-        StringBuilder typeINstr = new StringBuilder();
-        importances = new double[TYPES_NUMBER];
-//        while (it.hasNext()) {
-//            param = (JsonObject) it.next();
-//            int type = param.getAsJsonPrimitive("type").getAsInt();
-//            double importance = param.getAsJsonPrimitive("importance").getAsDouble();
-//            importances[type] = importance;
-//            if (importance > 0) typeINstr.append(type).append(" ");
-//        }
-
-//        if (!typeINstr.toString().equals("")) {
-//            String[] str = typeINstr.toString().split(" ");
-//            typeIN = new int[str.length];//       в БД нумерация типов начинается с 1:
-//            for (int i = 0; i < str.length; i++) typeIN[i] = Integer.parseInt(str[i]) + 1;
-//        }
-        System.out.println("tut3");
+    public void parsingJsonQueryStr(String jsonQueryStr) {
+        System.out.println("Start serialization");
+        System.out.println(jsonQueryStr);
+        Gson gson = new GsonBuilder().create();
+        AreaQuery object = gson.fromJson(jsonQueryStr, AreaQuery.class);
+        System.out.println(object.getCoordinates()[0]+":"+object.getCoordinates()[1]);
+        System.out.println(object.getDistrict());
+        System.out.println(object.getRadius());
+        System.out.println(object.getNorthPoint()[0]+":"+object.getNorthPoint()[1]);
+        for (int i = 0; i < object.getEstimateParams().size(); i++) {
+            System.out.println(object.getEstimateParam(i));
+        }
+        System.out.println("Stop serialization");
     }
 
     private void calculateEstimate() {
@@ -80,6 +54,7 @@ public class AreaInformation {
         result = Math.round(result * 100);
         estimate = result / 100;
     }
+
 
     private String createAnswerJson(CompanyDao companyDao, MetroDao metroDao) {
         System.out.println("in createAnswerJson");
@@ -149,7 +124,7 @@ public class AreaInformation {
         }
         answerRootObject.add("infrastructure", infrastructure);
 
-        System.out.println(answerRootObject.toString()); //ответ готов
+        System.out.println("jSON ответ"+answerRootObject.toString()); //ответ готов
         return answerRootObject.toString();
     }
 

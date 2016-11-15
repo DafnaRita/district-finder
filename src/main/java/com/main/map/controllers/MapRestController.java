@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
 @RestController
 public class MapRestController {
     @Autowired
@@ -27,9 +25,9 @@ public class MapRestController {
     }
 
     @PostMapping(value = "/get_query")
-    public String PostAreaInformation(@RequestBody String jsonQueryStr) {
+    public void PostAreaInformation(@RequestBody String jsonQueryStr) {
         AreaInformation areaInformation = new AreaInformation();
-        return areaInformation.requestHandling(jsonQueryStr, companyDao, metroDao);
+        areaInformation.requestHandling(jsonQueryStr, companyDao, metroDao);
     }
 
 }
