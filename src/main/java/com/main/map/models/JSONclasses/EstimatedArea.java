@@ -3,14 +3,14 @@ package com.main.map.models.JSONclasses;
 /**
  * Created by Margo on 15.11.2016.
  */
-public class Param {
+public class EstimatedArea {
     private int type;
     private int importance;
 
-    public Param() {
+    public EstimatedArea() {
     }
 
-    public Param(int type, int importance) {
+    public EstimatedArea(int type, int importance) {
         this.type = type;
         this.importance = importance;
     }
@@ -26,7 +26,7 @@ public class Param {
     public int getImportance() {
         return this.importance;
     }
-    public int setType() {
+    public int getType() {
         return this.type;
     }
 

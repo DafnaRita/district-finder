@@ -3,8 +3,6 @@ package com.main.map.models.JSONclasses;
 import com.mysql.fabric.xmlrpc.base.Param;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by Margo on 15.11.2016.
@@ -15,14 +13,14 @@ public class AreaQuery {
     private String district;
     private int radius;
     private float[] northPoint;
-    private ArrayList<Param> estimateParams = new ArrayList<>();
+    private ArrayList<EstimatedArea> estimateParams = new ArrayList<>();
 
     public AreaQuery() {
     }
 
     public AreaQuery(float[] coordinatesCurrent,
                      String district, int radius,
-                     float[] northPoint, ArrayList<Param> estimateParams) {
+                     float[] northPoint, ArrayList<EstimatedArea> estimateParams) {
         this.coordinatesCurrent = coordinatesCurrent;
         this.district = district;
         this.radius = radius;
@@ -42,7 +40,7 @@ public class AreaQuery {
     public void setNorthPoint(float[] northPoint) {
         this.northPoint = northPoint;
     }
-    public void setEstimateParams(ArrayList<Param> estimateParams) {
+    public void setEstimateParams(ArrayList<EstimatedArea> estimateParams) {
         this.estimateParams = estimateParams;
     }
 
@@ -58,20 +56,11 @@ public class AreaQuery {
     public float[] getNorthPoint() {
         return this.northPoint;
     }
-    public Param getEstimateParam(int index) {
+    public EstimatedArea getEstimateParam(int index) {
         return this.estimateParams.get(index);
     }
-    public ArrayList<Param> getEstimateParams() {
+    public ArrayList<EstimatedArea> getEstimateParams() {
         return this.estimateParams;
     }
 
-    @Override
-    public String toString() {
-        String str = "Координаты центра:"+coordinatesCurrent[0] +
-                ":" +coordinatesCurrent[1] +
-                "Район:" +district+
-                "Радиус:" + radius +
-                "Координаты верха:"+northPoint[0] +":" +northPoint[1];
-        return str;
-    }
 }
