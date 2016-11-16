@@ -3,12 +3,12 @@ package com.main.map.models.JSONclasses;
 /**
  * Created by Margo on 15.11.2016.
  */
-public class Metro {
+public class MetroJSON {
     private String name;
     private int distance;
     private int color;
-    public Metro(){ }
-    public Metro(String name, int distance, int color){
+    public MetroJSON(){ }
+    public MetroJSON(String name, int distance, int color){
         this.name = name;
         this.distance = distance;
         this.color = color;
