@@ -14,7 +14,6 @@ public class Company {
     private long id;
 
     @NotNull
-
     private String name;
 
     @NotNull

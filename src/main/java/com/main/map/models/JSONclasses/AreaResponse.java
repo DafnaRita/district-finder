@@ -11,14 +11,14 @@ public class AreaResponse {
     private double estimate;
     private String  address;
     private DistrictRating districtRating;
-    private ArrayList<Metro> metro = new ArrayList<>();
+    private ArrayList<MetroJSON> metro = new ArrayList<>();
     private ArrayList<Infrastructure> infrastructure = new ArrayList<>();
 
     public AreaResponse() {
     }
     public AreaResponse(double estimate,
                      String address, DistrictRating districtRating,
-                        ArrayList<Metro> metro,
+                        ArrayList<MetroJSON> metro,
                         ArrayList<Infrastructure> infrastructure) {
         this.estimate = estimate;
         this.address = address;
@@ -36,7 +36,7 @@ public class AreaResponse {
     public void setDistrictRating(DistrictRating districtRating) {
         this.districtRating = districtRating;
     }
-    public void setMetro(ArrayList<Metro> metro) {
+    public void setMetro(ArrayList<MetroJSON> metro) {
         this.metro = metro;
     }
     public void setInfrastructure(ArrayList<Infrastructure> infrastructure) {
@@ -52,7 +52,7 @@ public class AreaResponse {
     public DistrictRating getDistrictRating() {
         return this.districtRating;
     }
-    public ArrayList<Metro> getMetro() {
+    public ArrayList<MetroJSON> getMetro() {
         return this.metro;
     }
     public ArrayList<Infrastructure> getInfrastructure() {

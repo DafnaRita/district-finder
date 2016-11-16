@@ -1,6 +1,7 @@
 package com.main.map.controllers;
 
 import com.main.getOpenData.DAO.CompanyDao;
+import com.main.getOpenData.DAO.DistrictDao;
 import com.main.getOpenData.DAO.MetroDao;
 import com.main.map.models.AreaInformation;
 import com.main.map.models.EstimateParam;
@@ -15,6 +16,8 @@ public class MapRestController {
     private CompanyDao companyDao;
     @Autowired
     private MetroDao metroDao;
+    @Autowired
+    private DistrictDao districtDao;
 
     @PostMapping(value  = "/get_info")
     public String PostEstimateParam(@RequestBody String jsonQueryStr){
@@ -27,6 +30,6 @@ public class MapRestController {
     @PostMapping(value = "/get_query")
     public String  PostAreaInformation(@RequestBody String jsonQueryStr) {
         AreaInformation areaInformation = new AreaInformation();
-        return areaInformation.requestHandling(jsonQueryStr, companyDao, metroDao);
+        return areaInformation.requestHandling(jsonQueryStr, companyDao, metroDao, districtDao);
     }
 }
