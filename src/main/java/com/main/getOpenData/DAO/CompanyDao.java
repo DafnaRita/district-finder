@@ -17,4 +17,8 @@ public interface CompanyDao extends CrudRepository<Company,Long>{
             "where (lng BETWEEN ?1 AND ?2) AND (lat BETWEEN  ?3 AND ?4) AND (id_type in ?5)")
     List<Company> findByRadius(double xLeft,  double xRight,
                                 double yBottom,  double yTop, int[] typeIN);
+
+    @Query(value = "select c from Company c" +
+            " where (lat = ?1 ) AND (lng = ?2) AND (id_type = ?3)",nativeQuery = true)
+    List<Company> findByLatAndlngAndIt_type(double lat, double lng,int it_type);
 }
