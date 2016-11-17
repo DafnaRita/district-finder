@@ -22,7 +22,7 @@ public class DataGovSpb {
     public String getData() {
         String HEADER_SECURITY_TOKEN = "adabe8bdb5e423e23c4a3a576a01dcf22b87ba0d";
         StringBuilder result = new StringBuilder();
-        String queryUrl = "http://data.gov.spb.ru/api/v1/datasets/18/versions/latest/data";
+        String queryUrl = "http://data.gov.spb.ru/api/v1/datasets/29/versions/latest/data?per_page=100";
 
 
         HttpURLConnection conn;
@@ -44,23 +44,23 @@ public class DataGovSpb {
         }
 
         //      get data with lib org.apache
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpGet request = new HttpGet(queryUrl);
-        request.addHeader("Authorization","Token " + HEADER_SECURITY_TOKEN);
-
-        try {
-            HttpResponse response = client.execute(request);
-
-            BufferedReader rd = new BufferedReader(new InputStreamReader(
-                            response.getEntity().getContent()));
-
-            String line;
-            while ((line = rd.readLine()) != null) {
-                result.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        HttpClient client = HttpClientBuilder.create().build();
+//        HttpGet request = new HttpGet(queryUrl);
+//        request.addHeader("Authorization","Token " + HEADER_SECURITY_TOKEN);
+//
+//        try {
+//            HttpResponse response = client.execute(request);
+//
+//            BufferedReader rd = new BufferedReader(new InputStreamReader(
+//                            response.getEntity().getContent()));
+//
+//            String line;
+//            while ((line = rd.readLine()) != null) {
+//                result.append(line);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         return result.toString();
     }
 }

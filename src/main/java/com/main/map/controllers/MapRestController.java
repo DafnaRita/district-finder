@@ -2,6 +2,7 @@ package com.main.map.controllers;
 
 import com.main.getOpenData.DAO.Company;
 import com.main.getOpenData.DAO.CompanyDao;
+import com.main.getOpenData.DAO.DistrictDao;
 import com.main.getOpenData.DAO.MetroDao;
 import com.main.map.models.AreaInformation;
 import com.main.map.models.EstimateParam;
@@ -17,6 +18,8 @@ public class MapRestController {
     private CompanyDao companyDao;
     @Autowired
     private MetroDao metroDao;
+    @Autowired
+    private DistrictDao districtDao;
 
     @GetMapping(value  = "/get_info")
     @ResponseBody
@@ -35,10 +38,10 @@ public class MapRestController {
         return "lol";
     }
  //   /get_info?lat=59.940375&lon=30.234669&type=7
-/*
+
     @PostMapping(value = "/get_query")
     public String  PostAreaInformation(@RequestBody String jsonQueryStr) {
         AreaInformation areaInformation = new AreaInformation();
-        return areaInformation.requestHandling(jsonQueryStr, companyDao, metroDao);
-    }*/
+        return areaInformation.requestHandling(jsonQueryStr, companyDao, metroDao, districtDao);
+    }
 }
