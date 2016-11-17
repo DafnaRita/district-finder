@@ -5,9 +5,6 @@ public class EstimateParam {
     double importance;
 
     public  String getInfo(String json){
-
-
-
         return "";
     }
 }
