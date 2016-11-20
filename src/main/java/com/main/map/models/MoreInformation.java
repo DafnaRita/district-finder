@@ -18,10 +18,11 @@ public class MoreInformation {
         this.companyDao = companyDao;
     }
 
-    public List<Company> getDataFromBase() {
-        System.out.println("Запрос прошел:");
-        System.out.println(companyDao.findByLatAndlngAndIt_type(this.lat, this.lon, this.type));
-
+    public Company getDataFromBase() {
         return companyDao.findByLatAndlngAndIt_type(this.lat, this.lon, this.type);
     }
+/*
+    public String createJSONRequest(Company data) {
+
+    }*/
 }
