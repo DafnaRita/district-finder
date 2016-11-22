@@ -53,7 +53,7 @@ public class AreaInformation {
        return estimate;
     }
 
-    private String createAnswerJson(CompanyDao companyDao, MetroDao metroDao, DistrictDao districtDao) {
+    public String createAnswerJson(CompanyDao companyDao, MetroDao metroDao, DistrictDao districtDao) {
         System.out.println("in createAnswerJson");
         String address = parseDataForGeoObject(getYandexGeocodeJSON(areaQuery.getCoordinates()));
         DistrictRating districtRating = getDistrictRating(districtDao);
@@ -95,7 +95,7 @@ public class AreaInformation {
         return gson.toJson(areaResponse);
     }
 
-    private String getYandexGeocodeJSON(double[] coordinates) {
+    public static String getYandexGeocodeJSON(double[] coordinates) {
         URL url;
         HttpURLConnection conn;
         BufferedReader rd;
@@ -118,7 +118,7 @@ public class AreaInformation {
     }
 
 
-    private String parseDataForGeoObject(String strJson) {
+    public static String parseDataForGeoObject(String strJson) {
         JsonObject rootObject = (new JsonParser()).parse(strJson).getAsJsonObject(); // чтение главного объекта
 //        return rootObject.getAsJsonObject("response")
 //                .getAsJsonObject("GeoObjectCollection")
@@ -210,8 +210,12 @@ public class AreaInformation {
         return new DistrictRating(district.getSafety(),district.getLifeQuality(),district.getTransportQuality(),
                 district.getRestAvailability(),district.getParsksAvailability());
     }
-
-    private int calculateDistance(Point point1, Point point2){
+/*
+   @param Point point1 - selected point of estimated house
+   @param Point point2 - object of company
+   @return distance between point1 and point2
+ */
+    public static int calculateDistance(Point point1, Point point2){
         double radius = 6371009;
         double deltaLat = Math.toRadians(Math.abs(point1.getLatitude()-point2.getLatitude()));
         double deltaLng = Math.toRadians(Math.abs(point1.getLongitude()-point2.getLongitude()));
