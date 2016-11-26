@@ -29,40 +29,65 @@ public class DataYandex2 {
     private CompanyTypeDao companyTypeDao;
     private BildingDao bildingDao;
     private KindergardenDao kindergardenDao;
-
+    private SchoolDao schoolDao;
+    private MedicalFacilityDao medicalFacilityDao;
+    private String strUrl = "https://search-maps.yandex.ru/v1/";
+    private String city = "Санкт-Петербург";
 
     public DataYandex2(String queryText, CompanyDao companyDao, CompanyTypeDao companyTypeDao,
-                       BildingDao bildingDao, KindergardenDao kindergardenDao) {
+                       BildingDao bildingDao, KindergardenDao kindergardenDao, SchoolDao schoolDao,
+                       MedicalFacilityDao medicalFacilityDao) {
         this.queryText = queryText;
         this.companyDao = companyDao;
         this.companyTypeDao = companyTypeDao;
         this.bildingDao = bildingDao;
         this.kindergardenDao = kindergardenDao;
+        this.schoolDao = schoolDao;
+        this.medicalFacilityDao = medicalFacilityDao;
     }
 
-    public boolean writeDataToBD() {
-        String strUrl = "https://search-maps.yandex.ru/v1/";
-        String city = "Санкт-Петербург";
+    public boolean writeDataToBDKindergarden() {
         DataYandex dataYandex = new DataYandex(queryText, companyDao, companyTypeDao);
-
         String text = dataYandex.getData(strUrl, queryText, city);
         dataYandex.writeDataToFile(text);
         List<Company> companies = dataYandex.parseData(text);
 //        companies.forEach(item -> System.out.println(item.getName()));
         for (Company x : companies) {
             System.out.println(x.getName());
-            bildingDao.save(new Bilding(x.getLongitude(), x.getLatitude()));
-            long id_bilding = 0;
-            for (Bilding bilding : bildingDao.findAll()) {
-                if (bilding.getLatitude() == x.getLatitude() & bilding.getLongitude() == x.getLongitude()){
-                    id_bilding = bilding.getId();
-                    break;
-                }
-            }
+            long id_bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLongitude(),x.getLatitude());
             kindergardenDao.save(new Kindergarden(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber()));
         }
         return true;
     }
+
+    public boolean writeToBDSchool(){
+        DataYandex dataYandex = new DataYandex(queryText, companyDao, companyTypeDao);
+        String text = dataYandex.getData(strUrl, queryText, city);
+        dataYandex.writeDataToFile(text);
+        List<Company> companies = dataYandex.parseData(text);
+//        companies.forEach(item -> System.out.println(item.getName()));
+        for (Company x : companies) {
+            System.out.println(x.getName());
+            long id_bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLongitude(),x.getLatitude());
+            schoolDao.save(new School(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber(),""));
+        }
+        return true;
+
+    }
+    public boolean writeToBDMed(){
+        DataYandex dataYandex = new DataYandex(queryText, companyDao, companyTypeDao);
+        String text = dataYandex.getData(strUrl, queryText, city);
+        dataYandex.writeDataToFile(text);
+        List<Company> companies = dataYandex.parseData(text);
+//        companies.forEach(item -> System.out.println(item.getName()));
+        for (Company x : companies) {
+            System.out.println(x.getName());
+            long id_bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLongitude(),x.getLatitude());
+            medicalFacilityDao.save(new MedicalFacility(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber()));
+        }
+        return true;
+    }
+
 
 
 }

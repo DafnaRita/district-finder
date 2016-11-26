@@ -30,6 +30,7 @@ public class Bilding {
         return id;
     }
 
+    @PersistenceContext
     public void setId(long id) {
         this.id = id;
     }
@@ -38,6 +39,7 @@ public class Bilding {
         return longitude;
     }
 
+    @PersistenceContext
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
@@ -46,6 +48,7 @@ public class Bilding {
         return latitude;
     }
 
+    @PersistenceContext
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }

@@ -133,10 +133,15 @@ public class DataYandex {
             String phoneNumber = "";
             if (companyMetaData.has("Phones")) {
                 JsonArray phones = companyMetaData.getAsJsonArray("Phones");
+                int count = 0;
                 for (Object phone1 : phones) {
-                    JsonObject phone = (JsonObject) phone1;
-                    phoneNumber += phone.get("formatted").getAsString() + " ; ";
+                    if (count < 3) {
+                        JsonObject phone = (JsonObject) phone1;
+                        phoneNumber += phone.get("formatted").getAsString() + " ; ";
+                    }else break;
+                    count++;
                 }
+                phoneNumber = phoneNumber.substring(0,phoneNumber.length()-1);
             }
 
             String workTime = "";

@@ -1,9 +1,7 @@
-package com.main.map.models;
+package com.main.map.models.additionalInformation;
 
 import com.main.getOpenData.DAO.Company;
 import com.main.getOpenData.DAO.CompanyDao;
-
-import java.util.List;
 
 public class MoreInformation {
     private double lat;

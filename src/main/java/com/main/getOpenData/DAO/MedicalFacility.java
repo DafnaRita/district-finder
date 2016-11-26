@@ -1,15 +1,17 @@
 package com.main.getOpenData.DAO;
 
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "kindergarden")
-public class Kindergarden {
+@Table(name = "medical_facility")
+public class MedicalFacility {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
+    @NotNull
     @Column(name = "id_bilding")
     private long id_bilding;
 
@@ -23,10 +25,10 @@ public class Kindergarden {
     @Column(name = "phone")
     private String phone;
 
-    public Kindergarden() {
+    public MedicalFacility() {
     }
 
-    public Kindergarden(long id_bilding, String name, String url, String phone) {
+    public MedicalFacility(long id_bilding, String name, String url, String phone) {
         this.id_bilding = id_bilding;
         this.name = name;
         this.url = url;
@@ -37,7 +39,6 @@ public class Kindergarden {
         return id;
     }
 
-    @PersistenceContext
     public void setId(long id) {
         this.id = id;
     }
@@ -46,7 +47,6 @@ public class Kindergarden {
         return id_bilding;
     }
 
-    @PersistenceContext
     public void setId_bilding(long id_bilding) {
         this.id_bilding = id_bilding;
     }
@@ -55,7 +55,6 @@ public class Kindergarden {
         return name;
     }
 
-    @PersistenceContext
     public void setName(String name) {
         this.name = name;
     }
@@ -64,7 +63,6 @@ public class Kindergarden {
         return url;
     }
 
-    @PersistenceContext
     public void setUrl(String url) {
         this.url = url;
     }
@@ -73,7 +71,6 @@ public class Kindergarden {
         return phone;
     }
 
-    @PersistenceContext
     public void setPhone(String phone) {
         this.phone = phone;
     }
