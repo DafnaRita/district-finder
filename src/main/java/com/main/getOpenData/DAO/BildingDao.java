@@ -9,9 +9,8 @@ import java.util.List;
 public interface BildingDao extends CrudRepository<Bilding,Long> {
 
     @Query(value = "select b from Bilding b " +
-            "where (lng BETWEEN ?1 AND ?2) AND (lat BETWEEN  ?3 AND ?4)")
-    List<Bilding> findByRadius(double xLeft, double xRight,
-                               double yBottom, double yTop);
+            "where (lat BETWEEN ?3 AND ?4) AND (lng BETWEEN  ?1 AND ?2)")
+    List<Bilding> findByRadius(double latLeft,double latRight,double longBottom,double longTop);
 
     @Query(value ="SELECT id FROM Bilding WHERE lat=?1 AND lng=?2")
     long findByLatLng(double lat, double lng);

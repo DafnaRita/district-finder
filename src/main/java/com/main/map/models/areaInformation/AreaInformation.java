@@ -7,6 +7,8 @@ import com.main.getOpenData.Point;
 import com.main.map.models.JSONclasses.*;
 import com.main.map.models.JSONclasses.MetroJSON;
 
+import static java.lang.Math.*;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -61,6 +63,7 @@ public class AreaInformation {
         System.out.println(object.getDistrict());
         System.out.println(object.getRadius());
         System.out.println(object.getNorthPoint()[0] + ":" + object.getNorthPoint()[1]);
+        System.out.println(object.getEastPoint()[0] + ":" + object.getEastPoint()[1]);
         for (int i = 0; i < object.getEstimateParams().size(); i++) {
             System.out.print(object.getEstimateParam(i).getImportance() + " ");
             System.out.println(object.getEstimateParam(i).getType());
@@ -87,8 +90,9 @@ public class AreaInformation {
 //        double[] coordinates = new double[2];
 //        coordinates[0] = 59.938274999991016;
 //        coordinates[1] = 30.277104119186273;
-        Point centreCoor = new Point(areaQuery.getCoordinates()[1], areaQuery.getCoordinates()[0]);
-        Point upCoor = new Point(areaQuery.getNorthPoint()[1], areaQuery.getNorthPoint()[0]);
+        Point centrePoint = new Point(areaQuery.getCoordinates()[1], areaQuery.getCoordinates()[0]);
+        Point northPoint = new Point(areaQuery.getNorthPoint()[1], areaQuery.getNorthPoint()[0]);
+        Point eastPoint = new Point(areaQuery.getEastPoint()[1], areaQuery.getEastPoint()[0]);
         ArrayList<Integer> listTypes = new ArrayList<>();
         for (EstimatedArea node : areaQuery.getEstimateParams()) {
             if (node.getImportance() != 0) {
@@ -102,7 +106,7 @@ public class AreaInformation {
             System.out.print(typeIN[i]);
         }
         System.out.println();
-        ArrayList<Infrastructure> infrastructure = getInRadius(centreCoor, upCoor,typeIN);
+        ArrayList<Infrastructure> infrastructure = getInRadius(centrePoint, northPoint, eastPoint, typeIN);
 
 //        Infrastructure infrastructure1 = new Infrastructure("Санкт-Петербург",
 //                "НОУ Международная",3,coordinates);
@@ -158,53 +162,80 @@ public class AreaInformation {
     }
 
 
-    private ArrayList<Infrastructure> getInRadius(Point centreCoor, Point upCoor, int[] typeIN) {
-        double radius = upCoor.getLatitude() - centreCoor.getLatitude();
-        double radiusSquared = Math.pow(radius, 2);
-        double xLeft = centreCoor.getLongitude() - radius;
-        double xRight = centreCoor.getLongitude() + radius;
-        double yBottom = centreCoor.getLatitude() - radius;
-        double yTop = centreCoor.getLatitude() + radius;
+    private ArrayList<Infrastructure> getInRadius(Point centrePoint, Point northPoint, Point eastPoint, int[] typeIN) {
+        double radiusEarth = 6_371_200d;
+        double deltaLong = Math.abs(northPoint.getLatitude() - centrePoint.getLatitude());
+        double radius = deltaLong * 40_008_550 / 360;
 
-        Iterator<Bilding> itBilding = bildingDao.findByRadius(xLeft, xRight, yBottom, yTop).iterator();
+//        double radiusSquared = Math.pow(radius, 2);
+        double latLeft = centrePoint.getLatitude() - abs(eastPoint.getLatitude() - centrePoint.getLatitude())-0.5;
+        double latRight = eastPoint.getLatitude()+0.5;
+        double longBottom = centrePoint.getLongitude() - deltaLong;
+        double longTop = centrePoint.getLongitude() + deltaLong;
+
+        Iterator<Bilding> itBilding = bildingDao.findByRadius(latLeft, latRight, longBottom, longTop).iterator();
         List<Bilding> listBilding = new ArrayList<>(15);
+        System.out.println("///////////////////");
         while (itBilding.hasNext()) {
             Bilding bilding = itBilding.next();
-            if (Math.pow(bilding.getLongitude() - centreCoor.getLongitude(), 2) +
-                    Math.pow(bilding.getLatitude() - centreCoor.getLatitude(), 2) < radiusSquared) {
+            System.out.println("id: " + bilding.getId() + " " + bilding.getLatitude());
+//            System.out.println("Math: " + Math.sqrt(Math.pow(bilding.getLongitude() - centrePoint.getLongitude(), 2) +
+//                    Math.pow(bilding.getLatitude() - centrePoint.getLatitude(), 2)));
+//            if (Math.sqrt(Math.pow(bilding.getLongitude() - centrePoint.getLongitude(), 2) +
+//                    Math.pow(bilding.getLatitude() - centrePoint.getLatitude(), 2)) < radius) {
+//                listBilding.add(bilding);
+//                System.out.println("added id : " + bilding.getId());
+//            }
+//            double distance = 2 * asin(sqrt(pow(sin((centrePoint.getLatitude() - bilding.getLatitude()) * PI / 180 / 2), 2) +
+//                    cos(centrePoint.getLatitude() * PI / 180) * cos(bilding.getLatitude() * PI / 180) *
+//                            pow(sin((centrePoint.getLongitude() - bilding.getLongitude()) * PI / 180 / 2), 2))) * radiusEarth;
+            double distance = calculateDistance(centrePoint,new Point(bilding.getLatitude(),bilding.getLongitude()));
+            if (distance < radius) {
                 listBilding.add(bilding);
+                System.out.println("added id : " + bilding.getId());
             }
         }
+        System.out.println("///////////////////");
 //        System.out.println("list company:");
 //         listCompany.forEach(item -> System.out.println(item.getName()));
 //        System.out.println("-----------");
 
         ArrayList<Infrastructure> listInfrastructure = new ArrayList<>(30);
         for (Bilding bilding : listBilding) {
-            List<Kindergarden> kindergarden = kindergardenDao.findByIdBilding(bilding.getId());
-            if (kindergarden.size() != 0) {
-                listInfrastructure.add(new Infrastructure(kindergarden.get(0).getName(), KINDERGARDEN,
-                        new double[]{bilding.getLatitude(), bilding.getLongitude()}));
+            for (int type : typeIN) {
+                if (type == KINDERGARDEN) {
+                    List<Kindergarden> kindergarden = kindergardenDao.findByIdBilding(bilding.getId());
+                    if (kindergarden.size() != 0) {
+                        listInfrastructure.add(new Infrastructure(kindergarden.get(0).getName(), KINDERGARDEN,
+                                new double[]{bilding.getLatitude(), bilding.getLongitude()}));
+                    }
+                }
+
+                if (type == MED) {
+                    List<MedicalFacility> medicalFacility = medicalFacilityDao.findByIdBilding(bilding.getId());
+                    if (medicalFacility.size() != 0) {
+                        listInfrastructure.add(new Infrastructure(medicalFacility.get(0).getName(), MED,
+                                new double[]{bilding.getLatitude(), bilding.getLongitude()}));
+                    }
+                }
+
+                if (type == SCHOOL) {
+                    List<School> school = schoolDao.findByIdBilding(bilding.getId());
+                    if (school.size() != 0) {
+                        listInfrastructure.add(new Infrastructure(school.get(0).getName(), SCHOOL,
+                                new double[]{bilding.getLatitude(), bilding.getLongitude()}));
+                    }
+                }
+
+                if (type == PARKING) {
+                    List<Parking> parking = parkingDao.findByIdBilding(bilding.getId());
+                    if (parking.size() != 0) {
+                        listInfrastructure.add(new Infrastructure(parking.get(0).getType() + " парковка", PARKING,
+                                new double[]{bilding.getLatitude(), bilding.getLongitude()}));
+                    }
+                }
+
             }
-
-            List<MedicalFacility> medicalFacility = medicalFacilityDao.findByIdBilding(bilding.getId());
-            if (medicalFacility.size() != 0) {
-                listInfrastructure.add(new Infrastructure(medicalFacility.get(0).getName(), MED,
-                        new double[]{bilding.getLatitude(), bilding.getLongitude()}));
-            }
-
-            List<School> school = schoolDao.findByIdBilding(bilding.getId());
-            if (school.size() != 0) {
-                listInfrastructure.add(new Infrastructure(school.get(0).getName(), SCHOOL,
-                        new double[]{bilding.getLatitude(), bilding.getLongitude()}));
-            }
-
-//            Parking parking = parkingDao.findByIdBilding(bilding.getId());
-//            if (parking != null) {
-//                listInfrastructure.add(new Infrastructure(parking.getName(), PARKING,
-//                        new double[]{bilding.getLatitude(), bilding.getLongitude()}));
-//            }
-
         }
 
 //        listInfrastruct.forEach(item -> System.out.println(item.getName()));
@@ -241,7 +272,7 @@ public class AreaInformation {
 //        System.out.println("//////////");
         for (Metro node : dequeMetroNear) {
 //            System.out.println(node.getName());
-            int realDistance = calculateDistance(selectedPoint, new Point(node.getLongitude(), node.getLatitude()));
+            int realDistance = (int)calculateDistance(selectedPoint, new Point(node.getLongitude(), node.getLatitude()));
             result.add(new MetroJSON(node.getName(), realDistance, node.getColorLine()));
         }
 //        System.out.println();
@@ -262,13 +293,17 @@ public class AreaInformation {
        @param Point point2 - object of company
        @return distance between point1 and point2
      */
-    public static int calculateDistance(Point point1, Point point2) {
-        double radius = 6371009;
-        double deltaLat = Math.toRadians(Math.abs(point1.getLatitude() - point2.getLatitude()));
-        double deltaLng = Math.toRadians(Math.abs(point1.getLongitude() - point2.getLongitude()));
-        double centralAngle = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(deltaLat / 2), 2) +
-                Math.cos(point1.getLatitude()) * Math.cos(point2.getLatitude()) * Math.pow(Math.sin(deltaLng / 2), 2)));
-        return (int) (radius * centralAngle);
+    public static double calculateDistance(Point point1, Point point2) {
+        double radiusEarth = 6_371_200d;
+        return 2 * asin(sqrt(pow(sin((point1.getLatitude() - point2.getLatitude()) * PI / 180 / 2), 2) +
+                cos(point1.getLatitude() * PI / 180) * cos(point2.getLatitude() * PI / 180) *
+                        pow(sin((point1.getLongitude() - point2.getLongitude()) * PI / 180 / 2), 2))) * radiusEarth;
+//        double radius = 6371009;
+//        double deltaLat = Math.toRadians(Math.abs(point1.getLatitude() - point2.getLatitude()));
+//        double deltaLng = Math.toRadians(Math.abs(point1.getLongitude() - point2.getLongitude()));
+//        double centralAngle = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(deltaLat / 2), 2) +
+//                Math.cos(point1.getLatitude()) * Math.cos(point2.getLatitude()) * Math.pow(Math.sin(deltaLng / 2), 2)));
+//        return (int) (radius * centralAngle);
     }
 }
 

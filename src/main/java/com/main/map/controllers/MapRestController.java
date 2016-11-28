@@ -16,7 +16,7 @@ public class MapRestController {
                                      @RequestParam(value="type", required=false, defaultValue="World") int type,
                                      @RequestParam(value="houseLat", required=false, defaultValue="World") double houseLat,
                                      @RequestParam(value="houseLng", required=false, defaultValue="World") double houseLng){
-        int distance = AreaInformation.calculateDistance(new Point(houseLng,houseLat),new Point(lon,lat));
+        int distance = (int)AreaInformation.calculateDistance(new Point(houseLng,houseLat),new Point(lon,lat));
         Context context = new Context();
         switch (type){
             case 1:
