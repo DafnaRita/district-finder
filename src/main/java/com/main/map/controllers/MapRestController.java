@@ -45,8 +45,7 @@ public class MapRestController {
         return areaInformation.requestHandling(jsonQueryStr, companyDao, metroDao, districtDao);
     }
 
-    @RequestMapping(value = "/check_session", method = RequestMethod.GET,
-            produces = "application/json")
+    @RequestMapping(value = "/check_session", method = RequestMethod.GET)
     public String checkSession() {
         System.out.println("check session");
         return "check Session";

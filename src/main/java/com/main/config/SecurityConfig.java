@@ -17,6 +17,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.util.LinkedHashMap;
 
+import static org.hibernate.criterion.Restrictions.and;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -36,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public Http403ForbiddenEntryPoint http403ForbiddenEntryPoint() {
+        System.out.println("403 bean");
         return new Http403ForbiddenEntryPoint();
     }
 
@@ -47,14 +50,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .httpBasic()
+                .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
+                .and()
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/*").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .and()
-                .httpBasic()
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new Http403ForbiddenEntryPoint());
+                .exceptionHandling();
     }
 }

@@ -1,10 +1,10 @@
-package com.main.config.JSONclasses;
+package com.main.auth.model.JSONclasses;
 
-public class LoginQuery {
+public class AuthQuery {
     private String login;
     private String pass;
 
-    public LoginQuery(String login, String pass) {
+    public AuthQuery(String login, String pass) {
         this.login = login;
         this.pass = pass;
     }
@@ -25,7 +25,7 @@ public class LoginQuery {
         return pass;
     }
 
-    public LoginQuery() {
+    public AuthQuery() {
     }
 }
 

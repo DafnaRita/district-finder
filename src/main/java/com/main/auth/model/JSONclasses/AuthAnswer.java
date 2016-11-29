@@ -1,13 +1,13 @@
-package com.main.config.JSONclasses;
+package com.main.auth.model.JSONclasses;
 
 /**
  * Created by Margo on 28.11.2016.
  */
-public class LoginAnswer {
+public class AuthAnswer {
     private boolean isAuth;
     private String error;
 
-    public LoginAnswer(boolean isAuth, String error) {
+    public AuthAnswer(boolean isAuth, String error) {
         this.isAuth = isAuth;
         this.error = error;
     }
@@ -20,7 +20,7 @@ public class LoginAnswer {
         this.error = error;
     }
 
-    public LoginAnswer() {
+    public AuthAnswer() {
     }
 
     public boolean isAuth() {
