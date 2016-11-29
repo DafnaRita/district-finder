@@ -29,7 +29,7 @@ public class DataGovSpb {
     public static void main(String[] args) {
         DataGovSpb dataGovSpb = new DataGovSpb();
         String result = dataGovSpb.getData();
-        System.out.println(result);
+        //System.out.println(result);
     }
 
     public DataGovSpb() {
