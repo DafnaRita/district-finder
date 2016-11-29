@@ -9,19 +9,22 @@ public class AdditionalInfo {
         private String url;
         private String phoneNumber;
         private String workTime;
+    private String additionalInfo;
+    private double distance;
+
 
     public AdditionalInfo() {
     }
 
-    public AdditionalInfo(String name, String address, String url,
-                          String phoneNumber, String workTime,
-                          String additionalInfo) {
+    public AdditionalInfo(String name, String address, String url, String phoneNumber,
+                          String workTime, String additionalInfo, double distance) {
         this.name = name;
         this.address = address;
         this.url = url;
         this.phoneNumber = phoneNumber;
         this.workTime = workTime;
         this.additionalInfo = additionalInfo;
+        this.distance = distance;
     }
 
     public void setName(String name) {
@@ -73,5 +76,11 @@ public class AdditionalInfo {
         return additionalInfo;
     }
 
-    private String additionalInfo;
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
 }

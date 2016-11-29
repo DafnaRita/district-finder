@@ -72,7 +72,7 @@ public class DataYandex {
         return true;
     }
 
-    private String getData(String urlToRead, String queryText, String city) {
+    public String getData(String urlToRead, String queryText, String city) {
         URL url;
         HttpURLConnection conn;
         BufferedReader rd;
@@ -96,7 +96,7 @@ public class DataYandex {
         return result.toString();
     }
 
-    private void writeDataToFile(String text) {
+    public void writeDataToFile(String text) {
         Path path = FileSystems.getDefault().getPath("E:\\GitJava\\BitBucket\\NC\\evaluator-hous\\files\\data.txt");
         try (FileWriter writer = new FileWriter(path.toString(), false)) {
             writer.write(text);
@@ -106,7 +106,7 @@ public class DataYandex {
         }
     }
 
-    private List<Company> parseData(String strJson) {
+    public List<Company> parseData(String strJson) {
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(strJson);
         JsonObject rootObject = jsonElement.getAsJsonObject(); // чтение главного объекта
@@ -133,10 +133,15 @@ public class DataYandex {
             String phoneNumber = "";
             if (companyMetaData.has("Phones")) {
                 JsonArray phones = companyMetaData.getAsJsonArray("Phones");
+                int count = 0;
                 for (Object phone1 : phones) {
-                    JsonObject phone = (JsonObject) phone1;
-                    phoneNumber += phone.get("formatted").getAsString() + " ; ";
+                    if (count < 3) {
+                        JsonObject phone = (JsonObject) phone1;
+                        phoneNumber += phone.get("formatted").getAsString() + " ; ";
+                    }else break;
+                    count++;
                 }
+                phoneNumber = phoneNumber.substring(0,phoneNumber.length()-1);
             }
 
             String workTime = "";

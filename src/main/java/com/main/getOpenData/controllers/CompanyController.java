@@ -1,7 +1,9 @@
 package com.main.getOpenData.controllers;
 
 import com.main.getOpenData.DAO.*;
+import com.main.getOpenData.DataGovSpb;
 import com.main.getOpenData.DataYandex;
+import com.main.getOpenData.DataYandex2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +22,23 @@ public class CompanyController {
         return "success";
     }
 
+    @RequestMapping(value = "/parking")
+    public String parking() {
+        DataGovSpb dataGovSpb = new DataGovSpb(parkingDao,bildingDao);
+        dataGovSpb.getData();
+        return "success";
+    }
+
     @RequestMapping(value = "/kind")
     public String kind() {
-        String queryText = "детский сад";
-        DataYandex dataYandex = new DataYandex(queryText, companyDao, companyTypeDao);
-        boolean success = dataYandex.writeDataToBD();
+//        String queryText = "детский сад";
+//        String queryText = "школа";
+        String queryText = "больница";
+        DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao,bildingDao,
+                kindergardenDao,schoolDao,medicalFacilityDao);
+//        boolean success = dataYandex.writeDataToBDKindergarden();
+//        boolean success = dataYandex.writeToBDSchool();
+        boolean success = dataYandex.writeToBDMed();
 
 //        String queryText = "Детский са";
 //        String queryTextEng = "hospitals";
@@ -68,4 +82,20 @@ public class CompanyController {
 
     @Autowired
     private MetroDao metroDao;
+
+    @Autowired
+    private BildingDao bildingDao;
+
+    @Autowired
+    private KindergardenDao kindergardenDao;
+
+    @Autowired
+    private ParkingDao parkingDao;
+
+    @Autowired
+    private MedicalFacilityDao medicalFacilityDao;
+
+    @Autowired
+    private SchoolDao schoolDao;
+
 }

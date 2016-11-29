@@ -1,8 +1,6 @@
 package com.main.map.models.JSONclasses;
 
-/**
- * Created by Margo on 15.11.2016.
- */
+
 public class MetroJSON {
     private String name;
     private int distance;

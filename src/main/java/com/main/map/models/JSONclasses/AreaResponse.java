@@ -13,18 +13,41 @@ public class AreaResponse {
     private DistrictRating districtRating;
     private ArrayList<MetroJSON> metro = new ArrayList<>();
     private ArrayList<Infrastructure> infrastructure = new ArrayList<>();
+    private String parkingType;
+    private int parkingCountPlace;
+    private int parkingDistance;
 
     public AreaResponse() {
     }
     public AreaResponse(double estimate,
                      String address, DistrictRating districtRating,
                         ArrayList<MetroJSON> metro,
-                        ArrayList<Infrastructure> infrastructure) {
+                        ArrayList<Infrastructure> infrastructure,
+                        String parkingType, int parkingCountPlace, int parkingDistance) {
         this.estimate = estimate;
         this.address = address;
         this.districtRating = districtRating;
         this.metro = metro;
         this.infrastructure = infrastructure;
+        this.parkingType = parkingType;
+        this.parkingCountPlace = parkingCountPlace;
+        this.parkingDistance = parkingDistance;
+    }
+
+    public String getParkingType() {
+        return parkingType;
+    }
+
+    public void setParkingType(String parkingType) {
+        this.parkingType = parkingType;
+    }
+
+    public int getParkingCount() {
+        return parkingCountPlace;
+    }
+
+    public void setParkingCount(int parkingCount) {
+        this.parkingCountPlace = parkingCount;
     }
 
     public void setEstimate(double estimate) {
