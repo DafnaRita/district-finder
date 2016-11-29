@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class MapRestController {
     @Autowired
     private CompanyDao companyDao;
@@ -42,5 +43,12 @@ public class MapRestController {
     public String  PostAreaInformation(@RequestBody String jsonQueryStr) {
         AreaInformation areaInformation = new AreaInformation();
         return areaInformation.requestHandling(jsonQueryStr, companyDao, metroDao, districtDao);
+    }
+
+    @RequestMapping(value = "/check_session", method = RequestMethod.GET,
+            produces = "application/json")
+    public String checkSession() {
+        System.out.println("check session");
+        return "check Session";
     }
 }
