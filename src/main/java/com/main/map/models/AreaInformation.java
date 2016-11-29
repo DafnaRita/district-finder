@@ -1,6 +1,5 @@
 package com.main.map.models;
 
-
 import com.google.gson.*;
 import com.main.getOpenData.DAO.*;
 import com.main.getOpenData.Point;
@@ -31,30 +30,30 @@ public class AreaInformation {
     }
 
     private AreaQuery parsingJsonQueryStr(String jsonQueryStr) {
-        System.out.println("in parsingJsonQueryStr");
-        System.out.println(jsonQueryStr);
+        //System.out.println("in parsingJsonQueryStr");
+        //System.out.println(jsonQueryStr);
         Gson gson = new GsonBuilder().create();
         AreaQuery object = gson.fromJson(jsonQueryStr, AreaQuery.class);
-        System.out.println(object.getCoordinates()[0]+":"+object.getCoordinates()[1]);
-        System.out.println(object.getDistrict());
-        System.out.println(object.getRadius());
-        System.out.println(object.getNorthPoint()[0]+":"+object.getNorthPoint()[1]);
+        //System.out.println(object.getCoordinates()[0]+":"+object.getCoordinates()[1]);
+        //System.out.println(object.getDistrict());
+        //System.out.println(object.getRadius());
+        //System.out.println(object.getNorthPoint()[0]+":"+object.getNorthPoint()[1]);
         for (int i = 0; i < object.getEstimateParams().size(); i++) {
-            System.out.print(object.getEstimateParam(i).getImportance()+ " ");
-            System.out.println(object.getEstimateParam(i).getType());
+            //System.out.print(object.getEstimateParam(i).getImportance()+ " ");
+            //System.out.println(object.getEstimateParam(i).getType());
         }
         return object;
     }
 
     private int calculateEstimate() {
-        System.out.println("in calculateEstimate");
+        //System.out.println("in calculateEstimate");
        /*надо придумать */
        int estimate = 5;
        return estimate;
     }
 
     private String createAnswerJson(CompanyDao companyDao, MetroDao metroDao, DistrictDao districtDao) {
-        System.out.println("in createAnswerJson");
+        //System.out.println("in createAnswerJson");
         String address = parseDataForGeoObject(getYandexGeocodeJSON(areaQuery.getCoordinates()));
         DistrictRating districtRating = getDistrictRating(districtDao);
         ArrayList<MetroJSON> metroJSON = getTwoMetro(metroDao);
@@ -74,12 +73,10 @@ public class AreaInformation {
             }
         }
         int[] typeIN = new int[listTypes.size()];
-        System.out.println();
         for (int i = 0; i <typeIN.length; i++){
             typeIN[i] = listTypes.get(i);
-            System.out.print(typeIN[i]);
+            //System.out.print(typeIN[i]);
         }
-        System.out.println();
         ArrayList<Infrastructure> infrastructure = getInRadius(centreCoor, upCoor, typeIN,companyDao);
 
 //        Infrastructure infrastructure1 = new Infrastructure("Санкт-Петербург",
@@ -91,7 +88,7 @@ public class AreaInformation {
         AreaResponse areaResponse = new AreaResponse(estimate,address,
                 districtRating, metroJSON,infrastructure);
         Gson gson = new GsonBuilder().create();
-        System.out.println(gson.toJson(areaResponse));
+        //System.out.println(gson.toJson(areaResponse));
         return gson.toJson(areaResponse);
     }
 
@@ -167,7 +164,7 @@ public class AreaInformation {
 
     // посмотреть, есть ли алгоритм подсчета именно реального расстояния
     private ArrayList<MetroJSON> getTwoMetro(MetroDao metroDao) {
-        System.out.println("in getTwoMetro");
+        //System.out.println("in getTwoMetro");
         Deque<Metro> dequeMetroNear = new LinkedList<>();
         dequeMetroNear.add(new Metro());
         dequeMetroNear.add(new Metro());
