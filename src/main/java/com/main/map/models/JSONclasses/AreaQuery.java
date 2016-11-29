@@ -12,20 +12,47 @@ public class AreaQuery {
     private double[] coordinatesCurrent;
     private String district;
     private int radius;
+    private double[] eastPoint;
     private double[] northPoint;
     private ArrayList<EstimatedArea> estimateParams = new ArrayList<>();
 
     public AreaQuery() {
     }
 
-    public AreaQuery(double[] coordinatesCurrent,
-                     String district, int radius,
+    public AreaQuery(double[] coordinatesCurrent, String district, int radius, double[] eastPoint,
                      double[] northPoint, ArrayList<EstimatedArea> estimateParams) {
         this.coordinatesCurrent = coordinatesCurrent;
         this.district = district;
         this.radius = radius;
+        this.eastPoint = eastPoint;
         this.northPoint = northPoint;
         this.estimateParams = estimateParams;
+    }
+
+//    public AreaQuery(double[] coordinatesCurrent,
+//                     String district, int radius,
+//                     double[] northPoint, ArrayList<EstimatedArea> estimateParams) {
+//        this.coordinatesCurrent = coordinatesCurrent;
+//        this.district = district;
+//        this.radius = radius;
+//        this.northPoint = northPoint;
+//        this.estimateParams = estimateParams;
+//    }
+
+    public double[] getCoordinatesCurrent() {
+        return coordinatesCurrent;
+    }
+
+    public void setCoordinatesCurrent(double[] coordinatesCurrent) {
+        this.coordinatesCurrent = coordinatesCurrent;
+    }
+
+    public double[] getEastPoint() {
+        return eastPoint;
+    }
+
+    public void setEastPoint(double[] eastPoint) {
+        this.eastPoint = eastPoint;
     }
 
     public void setDistrict(String district) {
