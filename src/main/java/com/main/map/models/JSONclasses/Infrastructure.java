@@ -4,22 +4,18 @@ package com.main.map.models.JSONclasses;
  * Created by Margo on 15.11.2016.
  */
 public class Infrastructure {
-    String address;
     String name;
     int type;
     private double[] coordinates;
     public Infrastructure(){ }
-    public Infrastructure(String address,String name,
+    public Infrastructure(String name,
                    int type,
                           double[] coordinates){
-        this.address = address;
         this.name = name;
         this.type = type;
         this.coordinates = coordinates;
     }
-    public void setAddress(String address) {
-        this.address = address;
-    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -31,9 +27,6 @@ public class Infrastructure {
         this.coordinates = coordinates;
     }
 
-    public String getAddress() {
-        return this.address;
-    }
     public String getName() {
         return this.name;
     }
