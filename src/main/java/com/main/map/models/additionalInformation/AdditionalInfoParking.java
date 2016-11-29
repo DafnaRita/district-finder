@@ -35,10 +35,10 @@ public class AdditionalInfoParking implements SpecificType{
         if (listParking.size() != 0) {
             parking = listParking.get(0);
         } else parking = new Parking("none",123,12,456);
-        String address = AreaInformation.parseDataForGeoObject(AreaInformation.getYandexGeocodeJSON(new double[]{lat, lng}));
+        String address = AreaInformation.parseDataForGeoObject(AreaInformation.getYandexGeocodeJSON(new double[]{lng, lat}));
 
         ParkingJSON parkingJSON =
-                new ParkingJSON(address, 123,456, distance);
+                new ParkingJSON(parking.getType(),address,parking.getCountPlace(),parking.getArea(), distance);
         Gson gson = new GsonBuilder().create();
         String str = gson.toJson(parkingJSON);
         System.out.println(str);

@@ -32,7 +32,7 @@ public class AdditionalInfoKindergarden implements SpecificType {
         if (listKindergarden.size() == 1) {
             kindergarden = listKindergarden.get(0);
         } else kindergarden = new Kindergarden(123,"non","non","none");
-        String address = AreaInformation.parseDataForGeoObject(AreaInformation.getYandexGeocodeJSON(new double[]{lat, lng}));
+        String address = AreaInformation.parseDataForGeoObject(AreaInformation.getYandexGeocodeJSON(new double[]{lng, lat}));
 
         KindergardenJSON kindergardenJSON =
                 new KindergardenJSON(address,kindergarden.getName(), kindergarden.getUrl(), kindergarden.getPhone(), distance);

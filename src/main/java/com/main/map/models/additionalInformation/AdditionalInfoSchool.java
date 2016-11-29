@@ -33,7 +33,7 @@ public class AdditionalInfoSchool implements SpecificType{
         if (listSchool.size() != 0) {
             school = listSchool.get(0);
         } else school = new School(123,"non","non","none","none");
-        String address = AreaInformation.parseDataForGeoObject(AreaInformation.getYandexGeocodeJSON(new double[]{lat, lng}));
+        String address = AreaInformation.parseDataForGeoObject(AreaInformation.getYandexGeocodeJSON(new double[]{lng, lat}));
 
         SchoolJSON schoolJSON =
                 new SchoolJSON(school.getName(),address, school.getPhone(), school.getUrl(), distance,"");

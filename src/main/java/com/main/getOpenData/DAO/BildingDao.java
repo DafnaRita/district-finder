@@ -15,4 +15,7 @@ public interface BildingDao extends CrudRepository<Bilding,Long> {
     @Query(value ="SELECT id FROM Bilding WHERE lat=?1 AND lng=?2")
     long findByLatLng(double lat, double lng);
 
+    @Query(value ="SELECT b FROM Bilding b WHERE id=?1")
+    Bilding findById(long id);
+
 }

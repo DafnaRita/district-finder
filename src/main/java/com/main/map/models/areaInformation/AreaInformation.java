@@ -108,6 +108,19 @@ public class AreaInformation {
         System.out.println();
         ArrayList<Infrastructure> infrastructure = getInRadius(centrePoint, northPoint, eastPoint, typeIN);
 
+        double minDistance = Double.MAX_VALUE;
+        Parking parking = new Parking();
+        for (Parking currParking : parkingDao.findAll()){
+            Bilding bilding = bildingDao.findById(currParking.getIdBilding());
+            Point point = new Point(bilding.getLongitude(),bilding.getLatitude());
+            double distance = calculateDistance(point,centrePoint);
+            if (minDistance > distance){
+                minDistance = distance;
+                parking = currParking;
+            }
+            System.out.println("Type: " + currParking.getType() + " id: " + bilding.getId() + " distance: " + distance);
+        }
+        System.out.println("Итоговая : " + parking.getType() + " id: " + parking.getId() + " distance: " + minDistance);
 //        Infrastructure infrastructure1 = new Infrastructure("Санкт-Петербург",
 //                "НОУ Международная",3,coordinates);
 ////        Infrastructure infrastructure2 = new Infrastructure("Санкт-Петербург2",
@@ -115,7 +128,7 @@ public class AreaInformation {
 //        infrastructure.add(infrastructure1);
 //        infrastructure.add(infrastructure2);
         AreaResponse areaResponse = new AreaResponse(estimate, address,
-                districtRating, metroJSON, infrastructure);
+                districtRating, metroJSON, infrastructure,parking.getType(),parking.getCountPlace(),(int)minDistance);
         Gson gson = new GsonBuilder().create();
         System.out.println(gson.toJson(areaResponse));
         return gson.toJson(areaResponse);
@@ -145,6 +158,7 @@ public class AreaInformation {
 
 
     public static String parseDataForGeoObject(String strJson) {
+        System.out.println(strJson);
         JsonObject rootObject = (new JsonParser()).parse(strJson).getAsJsonObject(); // чтение главного объекта
 //        return rootObject.getAsJsonObject("response")
 //                .getAsJsonObject("GeoObjectCollection")
@@ -163,13 +177,12 @@ public class AreaInformation {
 
 
     private ArrayList<Infrastructure> getInRadius(Point centrePoint, Point northPoint, Point eastPoint, int[] typeIN) {
-        double radiusEarth = 6_371_200d;
         double deltaLong = Math.abs(northPoint.getLatitude() - centrePoint.getLatitude());
         double radius = deltaLong * 40_008_550 / 360;
 
 //        double radiusSquared = Math.pow(radius, 2);
-        double latLeft = centrePoint.getLatitude() - abs(eastPoint.getLatitude() - centrePoint.getLatitude())-0.5;
-        double latRight = eastPoint.getLatitude()+0.5;
+        double latLeft = centrePoint.getLatitude() - abs(eastPoint.getLatitude() - centrePoint.getLatitude());
+        double latRight = eastPoint.getLatitude();
         double longBottom = centrePoint.getLongitude() - deltaLong;
         double longTop = centrePoint.getLongitude() + deltaLong;
 
@@ -207,7 +220,7 @@ public class AreaInformation {
                     List<Kindergarden> kindergarden = kindergardenDao.findByIdBilding(bilding.getId());
                     if (kindergarden.size() != 0) {
                         listInfrastructure.add(new Infrastructure(kindergarden.get(0).getName(), KINDERGARDEN,
-                                new double[]{bilding.getLatitude(), bilding.getLongitude()}));
+                                new double[]{bilding.getLongitude(), bilding.getLatitude()}));
                     }
                 }
 
@@ -215,7 +228,7 @@ public class AreaInformation {
                     List<MedicalFacility> medicalFacility = medicalFacilityDao.findByIdBilding(bilding.getId());
                     if (medicalFacility.size() != 0) {
                         listInfrastructure.add(new Infrastructure(medicalFacility.get(0).getName(), MED,
-                                new double[]{bilding.getLatitude(), bilding.getLongitude()}));
+                                new double[]{bilding.getLongitude(), bilding.getLatitude()}));
                     }
                 }
 
@@ -223,7 +236,7 @@ public class AreaInformation {
                     List<School> school = schoolDao.findByIdBilding(bilding.getId());
                     if (school.size() != 0) {
                         listInfrastructure.add(new Infrastructure(school.get(0).getName(), SCHOOL,
-                                new double[]{bilding.getLatitude(), bilding.getLongitude()}));
+                                new double[]{bilding.getLongitude(), bilding.getLatitude()}));
                     }
                 }
 
@@ -231,7 +244,7 @@ public class AreaInformation {
                     List<Parking> parking = parkingDao.findByIdBilding(bilding.getId());
                     if (parking.size() != 0) {
                         listInfrastructure.add(new Infrastructure(parking.get(0).getType() + " парковка", PARKING,
-                                new double[]{bilding.getLatitude(), bilding.getLongitude()}));
+                                new double[]{bilding.getLongitude(), bilding.getLatitude()}));
                     }
                 }
 
