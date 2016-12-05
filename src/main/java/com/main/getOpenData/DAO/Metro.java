@@ -1,35 +1,37 @@
 package com.main.getOpenData.DAO;
 
+
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "metro")
 public class Metro {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+//
+//    @Column(name = "id_bilding")
+//    private double idBilding;
+
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "lng")
-    private double longitude;
-
-    @Column(name = "lat")
-    private double latitude;
 
     @Column(name = "color_line")
     private int colorLine;
 
+    @ManyToOne
+    @JoinColumn(name = "id_bilding")
+    private Bilding bildingMetro;
+
     public Metro() {
     }
 
-    public Metro(String name, double longitude, double latitude, int colorLine) {
+    public Metro( String name, int colorLine) {
+//        this.idBilding = idBilding;
         this.name = name;
-        this.longitude = longitude;
-        this.latitude = latitude;
         this.colorLine = colorLine;
     }
 
@@ -37,44 +39,41 @@ public class Metro {
         return id;
     }
 
-    @PersistenceContext
     public void setId(long id) {
         this.id = id;
     }
+
+//    public double getIdBilding() {
+//        return idBilding;
+//    }
+//
+//    public void setIdBilding(double idBilding) {
+//        this.idBilding = idBilding;
+//    }
 
     public String getName() {
         return name;
     }
 
-    @PersistenceContext
     public void setName(String name) {
         this.name = name;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    @PersistenceContext
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    @PersistenceContext
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
     }
 
     public int getColorLine() {
         return colorLine;
     }
 
-    @PersistenceContext
     public void setColorLine(int colorLine) {
         this.colorLine = colorLine;
     }
+
+    public Bilding getBildingMetro() {
+        return bildingMetro;
+    }
+
+    public void setBildingMetro(Bilding bildingMetro) {
+        this.bildingMetro = bildingMetro;
+    }
 }
+
+

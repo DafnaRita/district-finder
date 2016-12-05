@@ -17,7 +17,7 @@
 //    private AreaQuery areaQuery;
 //
 //    public String requestHandling(String jsonQueryStr, CompanyDao companyDao,
-//                                MetroDao metroDao, DistrictDao districtDao) {
+//                                Metro1Dao metroDao, DistrictDao districtDao) {
 //        try {
 //            this.areaQuery = parsingJsonQueryStr(jsonQueryStr);
 //
@@ -52,7 +52,7 @@
 //       return estimate;
 //    }
 //
-//    private String createAnswerJson(CompanyDao companyDao, MetroDao metroDao, DistrictDao districtDao) {
+//    private String createAnswerJson(CompanyDao companyDao, Metro1Dao metroDao, DistrictDao districtDao) {
 //        //System.out.println("in createAnswerJson");
 //        String address = parseDataForGeoObject(getYandexGeocodeJSON(areaQuery.getCoordinates()));
 //        DistrictRating districtRating = getDistrictRating(districtDao);
@@ -163,17 +163,17 @@
 //    }
 //
 //    // посмотреть, есть ли алгоритм подсчета именно реального расстояния
-//    private ArrayList<MetroJSON> getTwoMetro(MetroDao metroDao) {
+//    private ArrayList<MetroJSON> getTwoMetro(Metro1Dao metroDao) {
 //        //System.out.println("in getTwoMetro");
-//        Deque<Metro> dequeMetroNear = new LinkedList<>();
-//        dequeMetroNear.add(new Metro());
-//        dequeMetroNear.add(new Metro());
+//        Deque<Metro1> dequeMetroNear = new LinkedList<>();
+//        dequeMetroNear.add(new Metro1());
+//        dequeMetroNear.add(new Metro1());
 //        double leastDistance = Double.MAX_VALUE;
 //        double distance = Double.MAX_VALUE;
 //
 //        Point selectedPoint = new Point(this.areaQuery.getCoordinates()[1],this.areaQuery.getCoordinates()[0]);
 ////        System.out.println("selectedPoint: " + selectedPoint.getLatitude() + " ; " + selectedPoint.getLongitude());
-//        for (Metro node : metroDao.findAll()) {
+//        for (Metro1 node : metroDao.findAll()) {
 //            double currentDistance = Math.pow(node.getLongitude() - selectedPoint.getLongitude(), 2) +
 //                    Math.pow(node.getLatitude() - selectedPoint.getLatitude(), 2);
 //            if (currentDistance < leastDistance) {
@@ -190,7 +190,7 @@
 //        }
 //        ArrayList<MetroJSON> result = new ArrayList<>();
 ////        System.out.println("//////////");
-//        for (Metro node: dequeMetroNear){
+//        for (Metro1 node: dequeMetroNear){
 ////            System.out.println(node.getName());
 //            int realDistance = calculateDistance(selectedPoint,new Point(node.getLongitude(),node.getLatitude()));
 //            result.add(new MetroJSON(node.getName(),realDistance,node.getColorLine()));

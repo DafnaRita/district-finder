@@ -2,23 +2,23 @@ package com.main.getOpenData.controllers;
 
 import com.main.getOpenData.DAO.*;
 import com.main.getOpenData.DataGovSpb;
-import com.main.getOpenData.DataYandex;
 import com.main.getOpenData.DataYandex2;
+import com.main.getOpenData.WorkWithBilding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
-import java.util.List;
-
 @Controller
 public class CompanyController {
 
+
     @RequestMapping(value = "/metro")
     public String metro() {
-        for (Metro node : metroDao.findAll()) {
-            System.out.println(node.getName());
-        }
+//        WorkWithBilding workWithBilding = new WorkWithBilding(bildingDao);
+//        for (Metro1 node : metro1Dao.findAll()) {
+//            long idBilding = workWithBilding.getOrWriteBilding(node.getLongitude(),node.getLatitude());
+//            metroDao.save(new Metro(idBilding, node.getName(),node.getColorLine()));
+//        }
         return "success";
     }
 
@@ -81,7 +81,7 @@ public class CompanyController {
     private CompanyTypeDao companyTypeDao;
 
     @Autowired
-    private MetroDao metroDao;
+    private Metro1Dao metro1Dao;
 
     @Autowired
     private BildingDao bildingDao;
@@ -97,5 +97,8 @@ public class CompanyController {
 
     @Autowired
     private SchoolDao schoolDao;
+
+    @Autowired
+    private MetroDao metroDao;
 
 }
