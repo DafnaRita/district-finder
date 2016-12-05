@@ -16,11 +16,10 @@ import java.net.URL;
 import java.util.*;
 
 public class AreaInformation {
-    private static final int SCHOOL = 3;
-    private static final int MED = 6;
-    private static final int PARKING = 8;
-    private static final int KINDERGARDEN = 7;
-    private static final int MALL = 2;
+    private static final int PARKING = 1;
+    private static final int SCHOOL = 2;
+    private static final int MED = 3;
+    private static final int KINDERGARDEN = 4;
     private AreaQuery areaQuery;
     private MetroDao metroDao;
     private DistrictDao districtDao;
