@@ -7,8 +7,6 @@ import com.main.map.models.areaInformation.AreaInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api")
 public class MapRestController {
@@ -70,25 +68,6 @@ public class MapRestController {
     private MetroDao metroDao;
     @Autowired
     private DistrictDao districtDao;
-
-//    @GetMapping(value  = "/get_info")
-//    public String GetMoreInformation(@RequestParam(value="lat", required=false, defaultValue="World") double lat,
-//                                      @RequestParam(value="lon", required=false, defaultValue="World") double lon,
-//                                      @RequestParam(value="type", required=false, defaultValue="World") int type){
-//        MoreInformation moreInformation = new MoreInformation(lat, lon, type, companyDao);
-//        Company date = moreInformation.getDataFromBase();
-//        AdditionalInfo additionalInfo = new AdditionalInfo(date.getName(),
-//                date.getAddress(), date.getUrl(),date.getPhoneNumber(),
-//                date.getWorkTime(), date.getAdditionalInfo());
-//        Gson gson = new GsonBuilder().create();
-//        return gson.toJson(additionalInfo);
-//    }
-//
-//    @PostMapping(value = "/get_query")
-//    public String  PostAreaInformation(@RequestBody String jsonQueryStr) {
-//        AreaInformation areaInformation = new AreaInformation();
-//        return areaInformation.requestHandling(jsonQueryStr, companyDao, metroDao, districtDao);
-//    }
 
     @RequestMapping(value = "/check_session", method = RequestMethod.GET,
             produces = "application/json")

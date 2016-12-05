@@ -63,7 +63,6 @@ public class AreaInformation {
         System.out.println(object.getDistrict());
         System.out.println(object.getRadius());
         System.out.println(object.getNorthPoint()[0] + ":" + object.getNorthPoint()[1]);
-        System.out.println(object.getEastPoint()[0] + ":" + object.getEastPoint()[1]);
         for (int i = 0; i < object.getEstimateParams().size(); i++) {
             System.out.print(object.getEstimateParam(i).getImportance() + " ");
             System.out.println(object.getEstimateParam(i).getType());
@@ -83,16 +82,9 @@ public class AreaInformation {
         String address = parseDataForGeoObject(getYandexGeocodeJSON(areaQuery.getCoordinates()));
         DistrictRating districtRating = getDistrictRating(districtDao);
         ArrayList<MetroJSON> metroJSON = getTwoMetro();
-//        MetroJSON metroJSON1 = new MetroJSON("Невский проспект", 4, 2);
-//        MetroJSON metroJSON2 = new MetroJSON("Петроградка", 3, 2);
-//        metroJSON.add(metroJSON1);
-//        metroJSON.add(metroJSON2);
-//        double[] coordinates = new double[2];
-//        coordinates[0] = 59.938274999991016;
-//        coordinates[1] = 30.277104119186273;
-        Point centrePoint = new Point(areaQuery.getCoordinates()[1], areaQuery.getCoordinates()[0]);
-        Point northPoint = new Point(areaQuery.getNorthPoint()[1], areaQuery.getNorthPoint()[0]);
-        Point eastPoint = new Point(areaQuery.getEastPoint()[1], areaQuery.getEastPoint()[0]);
+
+        Point centrePoint = new Point(areaQuery.getCoordinates()[0], areaQuery.getCoordinates()[1]);
+        Point northPoint = new Point(areaQuery.getNorthPoint()[0], areaQuery.getNorthPoint()[1]);
         ArrayList<Integer> listTypes = new ArrayList<>();
         for (EstimatedArea node : areaQuery.getEstimateParams()) {
             if (node.getImportance() != 0) {
@@ -106,29 +98,21 @@ public class AreaInformation {
             System.out.print(typeIN[i]);
         }
         System.out.println();
-        ArrayList<Infrastructure> infrastructure = getInRadius(centrePoint, northPoint, eastPoint, typeIN);
+        ArrayList<Infrastructure> infrastructure = getInRadius(centrePoint, northPoint, typeIN);
 
         double minDistance = Double.MAX_VALUE;
         Parking parking = new Parking();
-        for (Parking currParking : parkingDao.findAll()){
+        for (Parking currParking : parkingDao.findAll()) {
             Bilding bilding = bildingDao.findById(currParking.getIdBilding());
-            Point point = new Point(bilding.getLongitude(),bilding.getLatitude());
-            double distance = calculateDistance(point,centrePoint);
-            if (minDistance > distance){
+            Point point = new Point(bilding.getLongitude(), bilding.getLatitude());
+            double distance = calculateDistance(point, centrePoint);
+            if (minDistance > distance) {
                 minDistance = distance;
                 parking = currParking;
             }
-            System.out.println("Type: " + currParking.getType() + " id: " + bilding.getId() + " distance: " + distance);
         }
-        System.out.println("Итоговая : " + parking.getType() + " id: " + parking.getId() + " distance: " + minDistance);
-//        Infrastructure infrastructure1 = new Infrastructure("Санкт-Петербург",
-//                "НОУ Международная",3,coordinates);
-////        Infrastructure infrastructure2 = new Infrastructure("Санкт-Петербург2",
-////                "НОУ Международная2",2,coordinates);
-//        infrastructure.add(infrastructure1);
-//        infrastructure.add(infrastructure2);
         AreaResponse areaResponse = new AreaResponse(estimate, address,
-                districtRating, metroJSON, infrastructure,parking.getType(),parking.getCountPlace(),(int)minDistance);
+                districtRating, metroJSON, infrastructure, parking.getType(), parking.getCountPlace(), (int) minDistance);
         Gson gson = new GsonBuilder().create();
         System.out.println(gson.toJson(areaResponse));
         return gson.toJson(areaResponse);
@@ -160,15 +144,6 @@ public class AreaInformation {
     public static String parseDataForGeoObject(String strJson) {
         System.out.println(strJson);
         JsonObject rootObject = (new JsonParser()).parse(strJson).getAsJsonObject(); // чтение главного объекта
-//        return rootObject.getAsJsonObject("response")
-//                .getAsJsonObject("GeoObjectCollection")
-//                .getAsJsonArray("featureMember").get(0).getAsJsonObject()
-//                .getAsJsonObject("GeoObject")
-//                .getAsJsonObject("metaDataProperty")
-//                .getAsJsonObject("GeocoderMetaData")
-//                .getAsJsonObject("AddressDetails")
-//                .getAsJsonObject("Country")
-//                .getAsJsonPrimitive("AddressLine").getAsString();
         return rootObject.getAsJsonObject("response")
                 .getAsJsonObject("GeoObjectCollection")
                 .getAsJsonArray("featureMember").get(0).getAsJsonObject()
@@ -176,42 +151,33 @@ public class AreaInformation {
     }
 
 
-    private ArrayList<Infrastructure> getInRadius(Point centrePoint, Point northPoint, Point eastPoint, int[] typeIN) {
-        double deltaLong = Math.abs(northPoint.getLatitude() - centrePoint.getLatitude());
+    private ArrayList<Infrastructure> getInRadius(Point centrePoint, Point northPoint, int[] typeIN) {
+        double deltaLong = Math.abs(northPoint.getLongitude() - centrePoint.getLongitude());
+        double deltaLat = Math.abs(deltaLong/cos(centrePoint.getLatitude()));
         double radius = deltaLong * 40_008_550 / 360;
-
+        System.out.println("int getInRadius");
+        System.out.println("centrePoint: long: " + centrePoint.getLongitude() + " lat: " + centrePoint.getLatitude());
+        System.out.println("northPoint: long: " + northPoint.getLongitude() + " lat: " + northPoint.getLatitude());
 //        double radiusSquared = Math.pow(radius, 2);
-        double latLeft = centrePoint.getLatitude() - abs(eastPoint.getLatitude() - centrePoint.getLatitude());
-        double latRight = eastPoint.getLatitude();
+        double latLeft = centrePoint.getLatitude() - deltaLat;
+        double latRight = centrePoint.getLatitude() + deltaLat;
         double longBottom = centrePoint.getLongitude() - deltaLong;
         double longTop = centrePoint.getLongitude() + deltaLong;
 
+        System.out.println("latLeft: " + latLeft);
+        System.out.println("latRight: " + latRight);
+        System.out.println("longBottom: " + longBottom);
+        System.out.println("longTop: " + longTop);
         Iterator<Bilding> itBilding = bildingDao.findByRadius(latLeft, latRight, longBottom, longTop).iterator();
         List<Bilding> listBilding = new ArrayList<>(15);
-        System.out.println("///////////////////");
         while (itBilding.hasNext()) {
             Bilding bilding = itBilding.next();
-            System.out.println("id: " + bilding.getId() + " " + bilding.getLatitude());
-//            System.out.println("Math: " + Math.sqrt(Math.pow(bilding.getLongitude() - centrePoint.getLongitude(), 2) +
-//                    Math.pow(bilding.getLatitude() - centrePoint.getLatitude(), 2)));
-//            if (Math.sqrt(Math.pow(bilding.getLongitude() - centrePoint.getLongitude(), 2) +
-//                    Math.pow(bilding.getLatitude() - centrePoint.getLatitude(), 2)) < radius) {
-//                listBilding.add(bilding);
-//                System.out.println("added id : " + bilding.getId());
-//            }
-//            double distance = 2 * asin(sqrt(pow(sin((centrePoint.getLatitude() - bilding.getLatitude()) * PI / 180 / 2), 2) +
-//                    cos(centrePoint.getLatitude() * PI / 180) * cos(bilding.getLatitude() * PI / 180) *
-//                            pow(sin((centrePoint.getLongitude() - bilding.getLongitude()) * PI / 180 / 2), 2))) * radiusEarth;
-            double distance = calculateDistance(centrePoint,new Point(bilding.getLatitude(),bilding.getLongitude()));
+            double distance = calculateDistance(centrePoint, new Point(bilding.getLongitude(), bilding.getLatitude()));
             if (distance < radius) {
                 listBilding.add(bilding);
-                System.out.println("added id : " + bilding.getId());
             }
         }
-        System.out.println("///////////////////");
-//        System.out.println("list company:");
-//         listCompany.forEach(item -> System.out.println(item.getName()));
-//        System.out.println("-----------");
+
 
         ArrayList<Infrastructure> listInfrastructure = new ArrayList<>(30);
         for (Bilding bilding : listBilding) {
@@ -250,52 +216,116 @@ public class AreaInformation {
 
             }
         }
-
-//        listInfrastruct.forEach(item -> System.out.println(item.getName()));
         return listInfrastructure;
     }
 
 
     private ArrayList<MetroJSON> getTwoMetro() {
         System.out.println("in getTwoMetro");
+
+//        Map<Metro,Point> mapMetro = new HashMap<>();
+//        List<Metro> listMetro = new ArrayList<>();
+//        for (Metro node : metroDao.findAll()) {
+//            listMetro.add(node);
+//        }
+//        for (Bilding bilding : bildingDao.findAll()) {
+//            for (Metro metro : listMetro) {
+//                if (metro.getIdBilding() == bilding.getId()) {
+//                    mapMetro.put(metro,new Point(bilding.getLongitude(),bilding.getLatitude()));
+//                    break;
+//                }
+//            }
+//        }
+//
+//        Point selectedPoint = new Point(this.areaQuery.getCoordinates()[0], this.areaQuery.getCoordinates()[1]);
+//        Deque<Map.Entry<Metro,Point> > dequeMetroNear = new LinkedList<>();
+//        dequeMetroNear.add(new Map.Entry<Metro, Point>() {
+//            @Override
+//            public Metro getKey() {
+//                return null;
+//            }
+//
+//            @Override
+//            public Point getValue() {
+//                return null;
+//            }
+//
+//            @Override
+//            public Point setValue(Point value) {
+//                return null;
+//            }
+//        });
+//        dequeMetroNear.add(new Map.Entry<Metro, Point>() {
+//            @Override
+//            public Metro getKey() {
+//                return null;
+//            }
+//
+//            @Override
+//            public Point getValue() {
+//                return null;
+//            }
+//
+//            @Override
+//            public Point setValue(Point value) {
+//                return null;
+//            }
+//        });
+//        double leastDistance = Double.MAX_VALUE;
+//        double distance = Double.MAX_VALUE;
+//
+//        for (Map.Entry<Metro,Point> entry : mapMetro.entrySet()) {
+//            double currentDistance = sqrt(pow((entry.getValue().getLongitude() - selectedPoint.getLongitude())*111, 2)+
+//                    pow((entry.getValue().getLatitude() - selectedPoint.getLatitude())*111*cos(selectedPoint.getLatitude()), 2));
+//            if (currentDistance < leastDistance) {
+//                distance = leastDistance;
+//                dequeMetroNear.removeLast();
+//                leastDistance = currentDistance;
+//                dequeMetroNear.addFirst(entry);
+//            } else if (currentDistance < distance) {
+//                distance = currentDistance;
+//                dequeMetroNear.removeLast();
+//                dequeMetroNear.addLast(entry);
+//            }
+//        }
+//        ArrayList<MetroJSON> result = new ArrayList<>();
+//        for (Map.Entry<Metro,Point> entry : dequeMetroNear) {
+//            int realDistance = (int) calculateDistance(selectedPoint, entry.getValue());
+//            result.add(new MetroJSON(entry.getKey().getName(), realDistance, entry.getKey().getColorLine()));
+//        }
+        Point selectedPoint = new Point(this.areaQuery.getCoordinates()[0], this.areaQuery.getCoordinates()[1]);
+        double leastDistance = Double.MAX_VALUE;
+        double distance = Double.MAX_VALUE;
         Deque<Metro> dequeMetroNear = new LinkedList<>();
         dequeMetroNear.add(new Metro());
         dequeMetroNear.add(new Metro());
-        double leastDistance = Double.MAX_VALUE;
-        double distance = Double.MAX_VALUE;
 
-        Point selectedPoint = new Point(this.areaQuery.getCoordinates()[1], this.areaQuery.getCoordinates()[0]);
-//        System.out.println("selectedPoint: " + selectedPoint.getLatitude() + " ; " + selectedPoint.getLongitude());
-        for (Metro node : metroDao.findAll()) {
-            double currentDistance = Math.pow(node.getLongitude() - selectedPoint.getLongitude(), 2) +
-                    Math.pow(node.getLatitude() - selectedPoint.getLatitude(), 2);
+        for (Metro metro : metroDao.findAll()) {
+            double currentDistance = sqrt(pow((metro.getBildingMetro().getLongitude() - selectedPoint.getLongitude())*111, 2)+
+                    pow((metro.getBildingMetro().getLatitude() - selectedPoint.getLatitude())*111*cos(selectedPoint.getLatitude()), 2));
             if (currentDistance < leastDistance) {
                 distance = leastDistance;
                 dequeMetroNear.removeLast();
                 leastDistance = currentDistance;
-                dequeMetroNear.addFirst(node);
+                dequeMetroNear.addFirst(metro);
             } else if (currentDistance < distance) {
                 distance = currentDistance;
                 dequeMetroNear.removeLast();
-                dequeMetroNear.addLast(node);
+                dequeMetroNear.addLast(metro);
             }
-//            System.out.println(node.getName()+ " cDistance: " + currentDistance + " leastDistance: " + leastDistance);
         }
         ArrayList<MetroJSON> result = new ArrayList<>();
-//        System.out.println("//////////");
         for (Metro node : dequeMetroNear) {
-//            System.out.println(node.getName());
-            int realDistance = (int)calculateDistance(selectedPoint, new Point(node.getLongitude(), node.getLatitude()));
+            Point nodePoint = new Point(node.getBildingMetro().getLongitude(),node.getBildingMetro().getLatitude());
+            int realDistance = (int) calculateDistance(selectedPoint, nodePoint);
             result.add(new MetroJSON(node.getName(), realDistance, node.getColorLine()));
         }
-//        System.out.println();
-        result.forEach((item -> System.out.println(item.getName() + " ; " + item.getDistance())));
+        result.forEach((item -> System.out.println(item.getName() + " : " + item.getDistance())));
         return result;
     }
 
     private DistrictRating getDistrictRating(DistrictDao districtDao) {
         List<District> listDistrict = districtDao.findByName(areaQuery.getDistrict());
-//        district.forEach(item -> System.out.println(item.getName()));
         District district = listDistrict.get(0);
         return new DistrictRating(district.getSafety(), district.getLifeQuality(), district.getTransportQuality(),
                 district.getRestAvailability(), district.getParsksAvailability());
@@ -308,15 +338,9 @@ public class AreaInformation {
      */
     public static double calculateDistance(Point point1, Point point2) {
         double radiusEarth = 6_371_200d;
-        return 2 * asin(sqrt(pow(sin((point1.getLatitude() - point2.getLatitude()) * PI / 180 / 2), 2) +
-                cos(point1.getLatitude() * PI / 180) * cos(point2.getLatitude() * PI / 180) *
-                        pow(sin((point1.getLongitude() - point2.getLongitude()) * PI / 180 / 2), 2))) * radiusEarth;
-//        double radius = 6371009;
-//        double deltaLat = Math.toRadians(Math.abs(point1.getLatitude() - point2.getLatitude()));
-//        double deltaLng = Math.toRadians(Math.abs(point1.getLongitude() - point2.getLongitude()));
-//        double centralAngle = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(deltaLat / 2), 2) +
-//                Math.cos(point1.getLatitude()) * Math.cos(point2.getLatitude()) * Math.pow(Math.sin(deltaLng / 2), 2)));
-//        return (int) (radius * centralAngle);
+        return 2 * asin(sqrt(pow(sin((point1.getLongitude() - point2.getLongitude()) * PI / 180 / 2), 2) +
+                cos(point1.getLongitude() * PI / 180) * cos(point2.getLongitude() * PI / 180) *
+                        pow(sin((point1.getLatitude() - point2.getLatitude()) * PI / 180 / 2), 2))) * radiusEarth;
     }
 }
 
