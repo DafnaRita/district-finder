@@ -106,7 +106,7 @@ public class DataGovSpb {
 
     private void writeToBD(Point point, int parkingSpace, int area, String type) {
         long idBilding = new WorkWithBilding(bildingDao).getOrWriteBilding(point.getLongitude(),point.getLatitude());
-        parkingDao.save(new Parking(type,idBilding,parkingSpace,area));
+//        parkingDao.save(new Parking(type,idBilding,parkingSpace,area));
     }
 
     private Point getPointFromYandex(String address) {

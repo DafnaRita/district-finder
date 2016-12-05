@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.main.getOpenData.DAO.BildingDao;
 import com.main.getOpenData.DAO.Kindergarden;
 import com.main.getOpenData.DAO.KindergardenDao;
+import com.main.getOpenData.Point;
 import com.main.map.models.JSONclasses.KindergardenJSON;
 import com.main.map.models.areaInformation.AreaInformation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,48 +23,35 @@ public class AdditionalInfoKindergarden implements SpecificType {
     }
 
     @Override
-    public String createAdditionalInfo(double lat, double lng, int distance) {
-        long id = bildingDao.findByLatLng(lat, lng);
-        List<Kindergarden> listKindergarden = kindergardenDao.findByIdBilding(id);
-        for (Kindergarden x : listKindergarden) {
-            System.out.println(x.getName());
+    public String createAdditionalInfo(Point centralPoint, Point pointKindergarden, int radius) {
+        int distance = (int) AreaInformation.calculateDistance(centralPoint, pointKindergarden);
+        int minDistance = Integer.MIN_VALUE;
+        int maxDistance = Integer.MAX_VALUE;
+        Kindergarden currentKindergarden = new Kindergarden("none", "none", "none");
+        for (Kindergarden kindergarden : kindergardenDao.findAll()) {
+            Point currentPoint = new Point(kindergarden.getBildingKindergarden().getLongitude(),
+                    kindergarden.getBildingKindergarden().getLatitude());
+            if (kindergarden.getBildingKindergarden().getLongitude() == pointKindergarden.getLongitude() &
+                    kindergarden.getBildingKindergarden().getLatitude()== pointKindergarden.getLatitude()){
+                currentKindergarden = kindergarden;
+            }
+            int currentDistance = (int) AreaInformation.calculateDistance(centralPoint, currentPoint);
+            if (minDistance > currentDistance){
+                minDistance = currentDistance;
+            }
+            if (maxDistance < radius & maxDistance < currentDistance){
+                maxDistance = currentDistance;
+            }
         }
-        Kindergarden kindergarden;
-        if (listKindergarden.size() == 1) {
-            kindergarden = listKindergarden.get(0);
-        } else kindergarden = new Kindergarden(123,"non","non","none");
-        String address = AreaInformation.parseDataForGeoObject(AreaInformation.getYandexGeocodeJSON(new double[]{lng, lat}));
+        String address = AreaInformation.parseDataForGeoObject(
+                AreaInformation.getYandexGeocodeJSON(new double[]{pointKindergarden.getLongitude(), pointKindergarden.getLatitude()}));
 
         KindergardenJSON kindergardenJSON =
-                new KindergardenJSON(address,kindergarden.getName(), kindergarden.getUrl(), kindergarden.getPhone(), distance);
+                new KindergardenJSON(currentKindergarden.getName(),address, currentKindergarden.getPhone(), currentKindergarden.getUrl(),
+                        distance,minDistance,maxDistance);
         Gson gson = new GsonBuilder().create();
         String str = gson.toJson(kindergardenJSON);
         System.out.println(str);
         return str;
     }
-
-
-
-//    public String createAdditionalInfo(double lat, double lng, int distance, KindergardenDao kindergardenDao) {
-//        System.out.println("in createAdditionalInfo");
-//        System.out.println("lat: " + lat + " ln: " + lng + " distance: " + distance);
-//        long id = kindergardenDao.findByLatLng(lat, lng);
-//        List<Kindergarden> listKindergarden = kindergardenDao.qwertyu(id);
-//        for (Kindergarden x : listKindergarden) {
-//            System.out.println(x.getName());
-//        }
-//        Kindergarden kindergarden;
-//        if (listKindergarden.size() == 1) {
-//            kindergarden = listKindergarden.get(0);
-//        } else kindergarden = new Kindergarden();
-//        String address = AreaInformation.parseDataForGeoObject(AreaInformation.getYandexGeocodeJSON(new double[]{lat, lng}));
-//        AdditionalInfoKindergarden additionalInfoKindergarden =
-//                new AdditionalInfoKindergarden(kindergarden.getName(), address, kindergarden.getUrl(), kindergarden.getPhone(), distance);
-//        Gson gson = new GsonBuilder().create();
-//        String str = gson.toJson(additionalInfoKindergarden);
-//        System.out.println(str);
-//        return str;
-//    }
-
-
 }

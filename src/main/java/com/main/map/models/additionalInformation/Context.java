@@ -1,6 +1,8 @@
 package com.main.map.models.additionalInformation;
 
 
+import com.main.getOpenData.Point;
+
 public class Context {
     private SpecificType specificType;
 
@@ -8,7 +10,7 @@ public class Context {
         this.specificType = specificType;
     }
 
-    public String getAddInfo(double lat,double lon, int distance){
-        return specificType.createAdditionalInfo(lat, lon, distance);
+    public String getAddInfo(Point centralPoint, Point currentPoint, int radius){
+        return specificType.createAdditionalInfo(centralPoint,currentPoint,radius);
     }
 }

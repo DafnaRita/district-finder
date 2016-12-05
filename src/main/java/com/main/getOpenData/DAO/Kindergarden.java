@@ -10,8 +10,6 @@ public class Kindergarden {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
-    @Column(name = "id_bilding")
-    private long id_bilding;
 
     @NotNull
     @Column(name = "name")
@@ -23,11 +21,14 @@ public class Kindergarden {
     @Column(name = "phone")
     private String phone;
 
+    @ManyToOne
+    @JoinColumn(name = "id_bilding")
+    private Bilding bildingKindergarden;
+
     public Kindergarden() {
     }
 
-    public Kindergarden(long id_bilding, String name, String url, String phone) {
-        this.id_bilding = id_bilding;
+    public Kindergarden(String name, String url, String phone) {
         this.name = name;
         this.url = url;
         this.phone = phone;
@@ -40,15 +41,6 @@ public class Kindergarden {
     @PersistenceContext
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getId_bilding() {
-        return id_bilding;
-    }
-
-    @PersistenceContext
-    public void setId_bilding(long id_bilding) {
-        this.id_bilding = id_bilding;
     }
 
     public String getName() {
@@ -76,5 +68,13 @@ public class Kindergarden {
     @PersistenceContext
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Bilding getBildingKindergarden() {
+        return bildingKindergarden;
+    }
+
+    public void setBildingKindergarden(Bilding bildingKindergarden) {
+        this.bildingKindergarden = bildingKindergarden;
     }
 }
