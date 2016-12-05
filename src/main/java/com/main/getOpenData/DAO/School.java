@@ -13,10 +13,6 @@ public class School {
     private long id;
 
     @NotNull
-    @Column(name = "id_bilding")
-    private long id_bilding;
-
-    @NotNull
     @Column(name = "name")
     private String name;
 
@@ -29,11 +25,16 @@ public class School {
     @Column(name = "raiting")
     private String raiting;
 
+    @ManyToOne
+    @JoinColumn(name = "id_bilding")
+    private Bilding bildingSchool;
+
+
+
     public School() {
     }
 
-    public School(long id_bilding, String name, String url, String phone, String raiting) {
-        this.id_bilding = id_bilding;
+    public School(String name, String url, String phone, String raiting) {
         this.name = name;
         this.url = url;
         this.phone = phone;
@@ -46,14 +47,6 @@ public class School {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getId_bilding() {
-        return id_bilding;
-    }
-
-    public void setId_bilding(long id_bilding) {
-        this.id_bilding = id_bilding;
     }
 
     public String getName() {
@@ -86,5 +79,13 @@ public class School {
 
     public void setRaiting(String raiting) {
         this.raiting = raiting;
+    }
+
+    public Bilding getBildingSchool() {
+        return bildingSchool;
+    }
+
+    public void setBildingSchool(Bilding bildingSchool) {
+        this.bildingSchool = bildingSchool;
     }
 }

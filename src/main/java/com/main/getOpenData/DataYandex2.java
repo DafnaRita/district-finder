@@ -55,7 +55,7 @@ public class DataYandex2 {
         for (Company x : companies) {
             System.out.println(x.getName());
             long id_bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLongitude(),x.getLatitude());
-            kindergardenDao.save(new Kindergarden(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber()));
+//            kindergardenDao.save(new Kindergarden(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber()));
         }
         return true;
     }
@@ -69,7 +69,7 @@ public class DataYandex2 {
         for (Company x : companies) {
             System.out.println(x.getName());
             long id_bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLongitude(),x.getLatitude());
-            schoolDao.save(new School(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber(),""));
+//            schoolDao.save(new School(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber(),""));
         }
         return true;
 
@@ -83,7 +83,7 @@ public class DataYandex2 {
         for (Company x : companies) {
             System.out.println(x.getName());
             long id_bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLongitude(),x.getLatitude());
-            medicalFacilityDao.save(new MedicalFacility(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber()));
+//            medicalFacilityDao.save(new MedicalFacility(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber()));
         }
         return true;
     }

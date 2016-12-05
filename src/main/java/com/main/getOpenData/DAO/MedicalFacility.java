@@ -12,10 +12,6 @@ public class MedicalFacility {
     private long id;
 
     @NotNull
-    @Column(name = "id_bilding")
-    private long id_bilding;
-
-    @NotNull
     @Column(name = "name")
     private String name;
 
@@ -25,11 +21,15 @@ public class MedicalFacility {
     @Column(name = "phone")
     private String phone;
 
+    @ManyToOne
+    @JoinColumn(name = "id_bilding")
+    private Bilding bildingMed;
+
+
     public MedicalFacility() {
     }
 
-    public MedicalFacility(long id_bilding, String name, String url, String phone) {
-        this.id_bilding = id_bilding;
+    public MedicalFacility(String name, String url, String phone) {
         this.name = name;
         this.url = url;
         this.phone = phone;
@@ -41,14 +41,6 @@ public class MedicalFacility {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getId_bilding() {
-        return id_bilding;
-    }
-
-    public void setId_bilding(long id_bilding) {
-        this.id_bilding = id_bilding;
     }
 
     public String getName() {
@@ -73,5 +65,13 @@ public class MedicalFacility {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Bilding getBildingMed() {
+        return bildingMed;
+    }
+
+    public void setBildingMed(Bilding bildingMed) {
+        this.bildingMed = bildingMed;
     }
 }

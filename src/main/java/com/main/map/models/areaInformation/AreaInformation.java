@@ -21,7 +21,6 @@ public class AreaInformation {
     private static final int PARKING = 8;
     private static final int KINDERGARDEN = 7;
     private static final int MALL = 2;
-    private double estimate;
     private AreaQuery areaQuery;
     private MetroDao metroDao;
     private DistrictDao districtDao;
@@ -45,8 +44,6 @@ public class AreaInformation {
     public String requestHandling(String jsonQueryStr) {
         try {
             this.areaQuery = parsingJsonQueryStr(jsonQueryStr);
-
-            this.estimate = calculateEstimate();
             return createAnswerJson();
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -70,11 +67,37 @@ public class AreaInformation {
         return object;
     }
 
-    private int calculateEstimate() {
+    private int calculateEstimate(ArrayList<Infrastructure> infrastructures) {
         System.out.println("in calculateEstimate");
+        int estimate = 0;
+        int count = 0;
+        for (int i = 0; i < areaQuery.getEstimateParams().size(); i++) {
+            int type = areaQuery.getEstimateParam(i).getType();
+            if (areaQuery.getEstimateParam(i).getImportance() == 0) {
+                continue;
+            }
+            int distance = Integer.MAX_VALUE;
+            Point centrePoint = new Point(areaQuery.getCoordinates()[0], areaQuery.getCoordinates()[1]);
+
+            for (Infrastructure infrastructure : infrastructures) {
+                Point currentPoint = new Point(infrastructure.getCoordinates()[0],infrastructure.getCoordinates()[1]);
+                int currentDistance = (int)calculateDistance(centrePoint,currentPoint);
+                if (infrastructure.getType() == type & distance > currentDistance){
+                    distance = currentDistance;
+                }
+            }
+
+            count++;
+            int d = (int)((distance-0.000001)*5/areaQuery.getRadius() +1);
+            estimate += areaQuery.getEstimateParam(i).getImportance()/d;
+//            estimate += ((int)((distance-0.0000001)*5 / areaQuery.getRadius())+1)*areaQuery.getEstimateParam(i).getImportance();
+            System.out.println("d: " + d);
+            System.out.println("estimate: " + estimate);
+            System.out.println("count: " + count);
+        }
        /*надо придумать */
-        int estimate = 5;
-        return estimate;
+       if (count == 0) return 0;
+        return round(estimate / count);
     }
 
     private String createAnswerJson() {
@@ -98,21 +121,22 @@ public class AreaInformation {
             System.out.print(typeIN[i]);
         }
         System.out.println();
-        ArrayList<Infrastructure> infrastructure = getInRadius(centrePoint, northPoint, typeIN);
+        ArrayList<Infrastructure> infrastructures = getInRadius(centrePoint, northPoint, typeIN);
 
         double minDistance = Double.MAX_VALUE;
         Parking parking = new Parking();
         for (Parking currParking : parkingDao.findAll()) {
-            Bilding bilding = bildingDao.findById(currParking.getIdBilding());
-            Point point = new Point(bilding.getLongitude(), bilding.getLatitude());
+            //Bilding bilding = bildingDao.findById(currParking.getIdBilding());
+            Point point = new Point(currParking.getBildingParking().getLongitude(), currParking.getBildingParking().getLatitude());
             double distance = calculateDistance(point, centrePoint);
             if (minDistance > distance) {
                 minDistance = distance;
                 parking = currParking;
             }
         }
+        int estimate = calculateEstimate(infrastructures);
         AreaResponse areaResponse = new AreaResponse(estimate, address,
-                districtRating, metroJSON, infrastructure, parking.getType(), parking.getCountPlace(), (int) minDistance);
+                districtRating, metroJSON, infrastructures, parking.getParkingType(), parking.getCountPlace(), (int) minDistance);
         Gson gson = new GsonBuilder().create();
         System.out.println(gson.toJson(areaResponse));
         return gson.toJson(areaResponse);
@@ -209,7 +233,7 @@ public class AreaInformation {
                 if (type == PARKING) {
                     List<Parking> parking = parkingDao.findByIdBilding(bilding.getId());
                     if (parking.size() != 0) {
-                        listInfrastructure.add(new Infrastructure(parking.get(0).getType() + " парковка", PARKING,
+                        listInfrastructure.add(new Infrastructure(parking.get(0).getParkingType() + " парковка", PARKING,
                                 new double[]{bilding.getLongitude(), bilding.getLatitude()}));
                     }
                 }

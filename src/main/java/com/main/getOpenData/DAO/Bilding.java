@@ -22,6 +22,9 @@ public class Bilding {
     @OneToMany(mappedBy = "bildingMetro")
     private List<Metro> metro;
 
+    @OneToMany(mappedBy = "bildingParking")
+    private List<Parking> parkings;
+
     public Bilding(double longitude, double latitude) {
         this.longitude = longitude;
         this.latitude = latitude;
@@ -63,5 +66,13 @@ public class Bilding {
 
     public void setMetro(List<Metro> metro) {
         this.metro = metro;
+    }
+
+    public List<Parking> getParkings() {
+        return parkings;
+    }
+
+    public void setParkings(List<Parking> parkings) {
+        this.parkings = parkings;
     }
 }
