@@ -3,6 +3,7 @@ package com.main.getOpenData.DAO;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Date;
 
 @Entity
 @Table(name = "medical_facility")
@@ -21,6 +22,12 @@ public class MedicalFacility {
     @Column(name = "phone")
     private String phone;
 
+    @Column(name = "date")
+    private Date date;
+
+    @Column(name = "id_from_source")
+    private long idFromSource;
+
     @ManyToOne
     @JoinColumn(name = "id_bilding")
     private Bilding bildingMed;
@@ -29,10 +36,12 @@ public class MedicalFacility {
     public MedicalFacility() {
     }
 
-    public MedicalFacility(String name, String url, String phone) {
+    public MedicalFacility(String name, String url, String phone, Date date, long idFromSource) {
         this.name = name;
         this.url = url;
         this.phone = phone;
+        this.date = date;
+        this.idFromSource = idFromSource;
     }
 
     public long getId() {
@@ -73,5 +82,21 @@ public class MedicalFacility {
 
     public void setBildingMed(Bilding bildingMed) {
         this.bildingMed = bildingMed;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public long getIdFromSource() {
+        return idFromSource;
+    }
+
+    public void setIdFromSource(long idFromSource) {
+        this.idFromSource = idFromSource;
     }
 }

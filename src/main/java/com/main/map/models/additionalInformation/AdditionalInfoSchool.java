@@ -12,6 +12,7 @@ import com.main.map.models.JSONclasses.KindergardenJSON;
 import com.main.map.models.JSONclasses.SchoolJSON;
 import com.main.map.models.areaInformation.AreaInformation;
 
+import java.sql.Date;
 import java.util.List;
 
 public class AdditionalInfoSchool implements SpecificType{
@@ -27,9 +28,9 @@ public class AdditionalInfoSchool implements SpecificType{
     @Override
     public String createAdditionalInfo(Point centralPoint, Point pointSchool, int radius) {
         int distance = (int) AreaInformation.calculateDistance(centralPoint, pointSchool);
-        int minDistance = Integer.MIN_VALUE;
-        int maxDistance = Integer.MAX_VALUE;
-        School currentSchool = new School("none", "none", "none","none");
+        int minDistance = Integer.MAX_VALUE;
+        int maxDistance = Integer.MIN_VALUE;
+        School currentSchool = new School("none", "none", "none","none",new Date(2016-12-4),11);
         for (School school : schoolDao.findAll()) {
             Point currentPoint = new Point(school.getBildingSchool().getLongitude(),school.getBildingSchool().getLatitude());
             if (school.getBildingSchool().getLongitude() == pointSchool.getLongitude() &

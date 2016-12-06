@@ -135,11 +135,18 @@ public class DataYandex {
                 JsonArray phones = companyMetaData.getAsJsonArray("Phones");
                 int count = 0;
                 for (Object phone1 : phones) {
-                    if (count < 3) {
+                    if (count ==0) {
                         JsonObject phone = (JsonObject) phone1;
-                        phoneNumber += phone.get("formatted").getAsString() + " ; ";
-                    }else break;
-                    count++;
+                        phoneNumber += phone.get("formatted").getAsString();
+                        count++;
+                        continue;
+                    }
+                    if (count < 2) {
+                        phoneNumber +=" ; ";
+                        JsonObject phone = (JsonObject) phone1;
+                        phoneNumber += phone.get("formatted").getAsString();
+                        count++;
+                    }
                 }
                 phoneNumber = phoneNumber.substring(0,phoneNumber.length()-1);
             }

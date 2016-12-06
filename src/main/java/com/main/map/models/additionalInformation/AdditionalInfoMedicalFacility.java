@@ -10,6 +10,7 @@ import com.main.getOpenData.Point;
 import com.main.map.models.JSONclasses.MedicalFacilityJSON;
 import com.main.map.models.areaInformation.AreaInformation;
 
+import java.sql.Date;
 import java.util.List;
 
 public class AdditionalInfoMedicalFacility implements SpecificType {
@@ -25,9 +26,9 @@ public class AdditionalInfoMedicalFacility implements SpecificType {
     @Override
     public String createAdditionalInfo(Point centralPoint, Point pointMed, int radius) {
         int distance = (int) AreaInformation.calculateDistance(centralPoint, pointMed);
-        int minDistance = Integer.MIN_VALUE;
-        int maxDistance = Integer.MAX_VALUE;
-        MedicalFacility currentMed = new MedicalFacility("none", "none", "none");
+        int minDistance = Integer.MAX_VALUE;
+        int maxDistance = Integer.MIN_VALUE;
+        MedicalFacility currentMed = new MedicalFacility("none", "none", "none",new Date(2016-12-4),11);
         for (MedicalFacility medicalFacility : medicalFacilityDao.findAll()) {
             Point currentPoint = new Point(medicalFacility.getBildingMed().getLongitude(),medicalFacility.getBildingMed().getLatitude());
             if (medicalFacility.getBildingMed().getLongitude() == pointMed.getLongitude() &
@@ -46,7 +47,7 @@ public class AdditionalInfoMedicalFacility implements SpecificType {
                 AreaInformation.getYandexGeocodeJSON(new double[]{pointMed.getLongitude(), pointMed.getLatitude()}));
 
         MedicalFacilityJSON medicalFacilityJSONJSON =
-                new MedicalFacilityJSON(currentMed.getName(),address, currentMed.getPhone(), currentMed.getUrl(),
+                new MedicalFacilityJSON(currentMed.getName(),address, currentMed.getUrl(), currentMed.getPhone(),
                         distance,minDistance,maxDistance);
         Gson gson = new GsonBuilder().create();
         String str = gson.toJson(medicalFacilityJSONJSON);

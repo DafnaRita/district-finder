@@ -13,6 +13,7 @@ import com.main.map.models.JSONclasses.ParkingJSON;
 import com.main.map.models.areaInformation.AreaInformation;
 
 
+import java.sql.Date;
 import java.util.List;
 
 public class AdditionalInfoParking implements SpecificType {
@@ -28,10 +29,10 @@ public class AdditionalInfoParking implements SpecificType {
     @Override
     public String createAdditionalInfo(Point centralPoint, Point pointParking, int radius) {
         int distance = (int) AreaInformation.calculateDistance(centralPoint, pointParking);
-        int minDistance = Integer.MIN_VALUE;
-        int maxDistance = Integer.MAX_VALUE;
+        int minDistance = Integer.MAX_VALUE;
+        int maxDistance = Integer.MIN_VALUE;
         int sumCount = 0;
-        Parking currentParking = new Parking("none", 12, 456);
+        Parking currentParking = new Parking("none", 12, 456,new Date(2016-12-4));
         for (Parking parking : parkingDao.findAll()) {
             Point currentPoint = new Point(parking.getBildingParking().getLongitude(),parking.getBildingParking().getLatitude());
             if (parking.getBildingParking().getLongitude() == pointParking.getLongitude() &
@@ -44,6 +45,9 @@ public class AdditionalInfoParking implements SpecificType {
             }
             if (maxDistance < radius & maxDistance < currentDistance){
                 maxDistance = currentDistance;
+            }
+            if (currentDistance < radius){
+                sumCount += parking.getCountPlace();
             }
         }
 

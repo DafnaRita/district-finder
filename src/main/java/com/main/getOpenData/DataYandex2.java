@@ -54,8 +54,11 @@ public class DataYandex2 {
 //        companies.forEach(item -> System.out.println(item.getName()));
         for (Company x : companies) {
             System.out.println(x.getName());
-            long id_bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLongitude(),x.getLatitude());
-//            kindergardenDao.save(new Kindergarden(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber()));
+            Bilding bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLatitude(),x.getLongitude());
+            Kindergarden kindergarden = new Kindergarden(x.getName(),x.getUrl(),x.getPhoneNumber(),
+                    new Date(Calendar.getInstance().getTime().getTime()),x.getIdFromSource());
+            kindergarden.setBildingKindergarden(bilding);
+            kindergardenDao.save(kindergarden);
         }
         return true;
     }
@@ -68,8 +71,11 @@ public class DataYandex2 {
 //        companies.forEach(item -> System.out.println(item.getName()));
         for (Company x : companies) {
             System.out.println(x.getName());
-            long id_bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLongitude(),x.getLatitude());
-//            schoolDao.save(new School(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber(),""));
+            Bilding bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLatitude(),x.getLongitude());
+            School school = new School(x.getName(),x.getUrl(),x.getPhoneNumber(),"",
+                    new Date(Calendar.getInstance().getTime().getTime()),x.getIdFromSource());
+            school.setBildingSchool(bilding);
+            schoolDao.save(school);
         }
         return true;
 
@@ -82,8 +88,11 @@ public class DataYandex2 {
 //        companies.forEach(item -> System.out.println(item.getName()));
         for (Company x : companies) {
             System.out.println(x.getName());
-            long id_bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLongitude(),x.getLatitude());
-//            medicalFacilityDao.save(new MedicalFacility(id_bilding,x.getName(),x.getUrl(),x.getPhoneNumber()));
+            Bilding bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLatitude(),x.getLongitude());
+            MedicalFacility medicalFacility = new MedicalFacility(x.getName(),x.getUrl(),x.getPhoneNumber(),
+                    new Date(Calendar.getInstance().getTime().getTime()),x.getIdFromSource());
+            medicalFacility.setBildingMed(bilding);
+            medicalFacilityDao.save(medicalFacility);
         }
         return true;
     }

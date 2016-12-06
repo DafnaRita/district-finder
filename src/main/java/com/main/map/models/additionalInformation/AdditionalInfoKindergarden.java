@@ -10,6 +10,7 @@ import com.main.map.models.JSONclasses.KindergardenJSON;
 import com.main.map.models.areaInformation.AreaInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.Date;
 import java.util.List;
 
 public class AdditionalInfoKindergarden implements SpecificType {
@@ -25,9 +26,9 @@ public class AdditionalInfoKindergarden implements SpecificType {
     @Override
     public String createAdditionalInfo(Point centralPoint, Point pointKindergarden, int radius) {
         int distance = (int) AreaInformation.calculateDistance(centralPoint, pointKindergarden);
-        int minDistance = Integer.MIN_VALUE;
-        int maxDistance = Integer.MAX_VALUE;
-        Kindergarden currentKindergarden = new Kindergarden("none", "none", "none");
+        int minDistance = Integer.MAX_VALUE;
+        int maxDistance = Integer.MIN_VALUE;
+        Kindergarden currentKindergarden = new Kindergarden("none", "none", "none",new Date(2016-12-4),11);
         for (Kindergarden kindergarden : kindergardenDao.findAll()) {
             Point currentPoint = new Point(kindergarden.getBildingKindergarden().getLongitude(),
                     kindergarden.getBildingKindergarden().getLatitude());
