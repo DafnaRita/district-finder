@@ -48,7 +48,7 @@ public class AdditionalInfoKindergarden implements SpecificType {
                 AreaInformation.getYandexGeocodeJSON(new double[]{pointKindergarden.getLongitude(), pointKindergarden.getLatitude()}));
 
         KindergardenJSON kindergardenJSON =
-                new KindergardenJSON(currentKindergarden.getName(),address, currentKindergarden.getPhone(), currentKindergarden.getUrl(),
+                new KindergardenJSON(currentKindergarden.getName(),address, currentKindergarden.getUrl(), currentKindergarden.getPhone(),
                         distance,minDistance,maxDistance);
         Gson gson = new GsonBuilder().create();
         String str = gson.toJson(kindergardenJSON);

@@ -24,6 +24,7 @@ public class MapRestController {
         System.out.println("type: " + type);
         System.out.println("houseLat: " + houseLat);
         System.out.println("houseLng: " + houseLng);
+        System.out.println("radius: " + radius);
         Point centralPoint = new Point(houseLng,houseLat);
         Point currentPoint = new Point(lng,lat);
 

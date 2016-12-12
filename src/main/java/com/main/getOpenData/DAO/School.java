@@ -41,13 +41,14 @@ public class School {
     public School() {
     }
 
-    public School(String name, String url, String phone, String raiting, Date date, long idFromSource) {
+    public School(String name, String url, String phone, String raiting, Date date, long idFromSource, Bilding bilding) {
         this.name = name;
         this.url = url;
         this.phone = phone;
         this.raiting = raiting;
         this.date = date;
         this.idFromSource = idFromSource;
+        this.bildingSchool = bilding;
     }
 
     public long getId() {

@@ -3,6 +3,7 @@ package com.main.map.models.additionalInformation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.main.getOpenData.DAO.Bilding;
 import com.main.getOpenData.DAO.BildingDao;
 import com.main.getOpenData.DAO.MedicalFacility;
 import com.main.getOpenData.DAO.MedicalFacilityDao;
@@ -28,7 +29,7 @@ public class AdditionalInfoMedicalFacility implements SpecificType {
         int distance = (int) AreaInformation.calculateDistance(centralPoint, pointMed);
         int minDistance = Integer.MAX_VALUE;
         int maxDistance = Integer.MIN_VALUE;
-        MedicalFacility currentMed = new MedicalFacility("none", "none", "none",new Date(2016-12-4),11);
+        MedicalFacility currentMed = new MedicalFacility("none", "none", "none",new Date(2016-12-4),11,new Bilding());
         for (MedicalFacility medicalFacility : medicalFacilityDao.findAll()) {
             Point currentPoint = new Point(medicalFacility.getBildingMed().getLongitude(),medicalFacility.getBildingMed().getLatitude());
             if (medicalFacility.getBildingMed().getLongitude() == pointMed.getLongitude() &

@@ -36,12 +36,13 @@ public class MedicalFacility {
     public MedicalFacility() {
     }
 
-    public MedicalFacility(String name, String url, String phone, Date date, long idFromSource) {
+    public MedicalFacility(String name, String url, String phone, Date date, long idFromSource, Bilding bilding) {
         this.name = name;
         this.url = url;
         this.phone = phone;
         this.date = date;
         this.idFromSource = idFromSource;
+        this.bildingMed = bilding;
     }
 
     public long getId() {

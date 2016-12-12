@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class CompanyController {
 
-
     @RequestMapping(value = "/addMetro")
     public String addMetro() {
         WorkWithBilding workWithBilding = new WorkWithBilding(bildingDao);
@@ -41,12 +40,32 @@ public class CompanyController {
         else return "Problems!";
     }
 
+    @RequestMapping(value = "/updateKind")
+    public String updateKind() {
+        String queryText = "детский сад";
+        DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao,bildingDao,
+                kindergardenDao,schoolDao,medicalFacilityDao);
+        boolean success = dataYandex.updateDataToBDKindergarden();
+        if (success) return "success";
+        else return "Problems!";
+    }
+
     @RequestMapping(value = "/addMed")
     public String addMed() {
         String queryText = "больница";
         DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao,bildingDao,
                 kindergardenDao,schoolDao,medicalFacilityDao);
         boolean success = dataYandex.writeToBDMed();
+        if (success) return "success";
+        else return "Problems!";
+    }
+
+    @RequestMapping(value = "/updateMed")
+    public String updateMed() {
+        String queryText = "больница";
+        DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao,bildingDao,
+                kindergardenDao,schoolDao,medicalFacilityDao);
+        boolean success = dataYandex.updateDataToBDMED();
         if (success) return "success";
         else return "Problems!";
     }
@@ -58,6 +77,16 @@ public class CompanyController {
                 kindergardenDao, schoolDao, medicalFacilityDao);
         boolean success = dataYandex.writeToBDSchool();
 
+        if (success) return "success";
+        else return "Problems!";
+    }
+
+    @RequestMapping(value = "/updateSchool")
+    public String updateSchool() {
+        String queryText = "школа";
+        DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao,bildingDao,
+                kindergardenDao,schoolDao,medicalFacilityDao);
+        boolean success = dataYandex.updateDataToBDSchool();
         if (success) return "success";
         else return "Problems!";
     }
