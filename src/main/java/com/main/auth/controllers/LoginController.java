@@ -38,4 +38,12 @@ public class LoginController {
         request.setRefreshed(true);
         return gson.toJson(request);
     }
+    @RequestMapping(value = "/admin/loginCheck",
+            method = RequestMethod.GET,
+            produces = "application/json")
+    public String checkLogin() {
+        /*Вставить логику для обновления данных*/
+        System.out.println("checkLogin");
+        return "redirect to Login";
+    }
 }
