@@ -43,7 +43,7 @@ public class AdditionalInfoParking implements SpecificType {
             if (minDistance > currentDistance){
                 minDistance = currentDistance;
             }
-            if (maxDistance < radius & maxDistance < currentDistance){
+            if (currentDistance < radius & maxDistance < currentDistance){
                 maxDistance = currentDistance;
             }
             if (currentDistance < radius){

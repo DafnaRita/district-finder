@@ -47,7 +47,7 @@ public class AdditionalInfoSchool implements SpecificType{
 
         SchoolJSON schoolJSON =
                 new SchoolJSON(currentSchool.getName(),address, currentSchool.getPhone(), currentSchool.getUrl(),
-                        distance,minDistance,maxDistance,"");
+                        distance,minDistance,maxDistance, currentSchool.getRaiting());
         Gson gson = new GsonBuilder().create();
         String str = gson.toJson(schoolJSON);
         System.out.println(str);
