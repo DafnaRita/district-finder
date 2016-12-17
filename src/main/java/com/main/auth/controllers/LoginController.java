@@ -55,6 +55,16 @@ public class LoginController {
         return gson.toJson(request);
     }
 
+    @RequestMapping(value = "/admin/refreshSchool", method = RequestMethod.GET,
+            produces = "application/json")
+    public String refreshSchool() {
+        /*Вставить логику для обновления данных*/
+        Gson gson = new Gson();
+        AdminAnswer request = new AdminAnswer();
+        request.setRefreshed(true);
+        return gson.toJson(request);
+    }
+
     @RequestMapping(value = "/admin/loginCheck",
             method = RequestMethod.GET,
             produces = "application/json")
