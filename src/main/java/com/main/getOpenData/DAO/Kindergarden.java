@@ -35,12 +35,13 @@ public class Kindergarden {
     public Kindergarden() {
     }
 
-    public Kindergarden(String name, String url, String phone, Date date, long idFromSource) {
+    public Kindergarden(String name, String url, String phone, Date date, long idFromSource, Bilding bilding) {
         this.name = name;
         this.url = url;
         this.phone = phone;
         this.date = date;
         this.idFromSource = idFromSource;
+        this.bildingKindergarden = bilding;
     }
 
     public long getId() {

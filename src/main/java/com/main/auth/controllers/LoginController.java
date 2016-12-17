@@ -4,14 +4,27 @@ import com.google.gson.Gson;
 import com.main.auth.model.JSONclasses.AdminAnswer;
 import com.main.auth.model.JSONclasses.AuthAnswer;
 import com.main.auth.model.JSONclasses.LastUpdate;
+import com.main.getOpenData.DAO.KindergardenDao;
+import com.main.getOpenData.DAO.MedicalFacilityDao;
+import com.main.getOpenData.DAO.SchoolDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LoginController {
+    @Autowired
+    private KindergardenDao kindergardenDao;
+
+    @Autowired
+    private SchoolDao schoolDao;
+
+    @Autowired
+    private MedicalFacilityDao medicalFacilityDao;
+
 
     private Logger log = LoggerFactory.getLogger(LoginController.class);
 
@@ -23,7 +36,7 @@ public class LoginController {
         AuthAnswer request = new AuthAnswer();
         request.setAuth(true);
         request.setError("none");
-        LastUpdate lastUpdate = new LastUpdate("12.06.16");
+        LastUpdate lastUpdate = new LastUpdate("12.05.16");
         request.setLastUpdate(lastUpdate);
         System.out.println(gson.toJson(request));
         return gson.toJson(request);

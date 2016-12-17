@@ -2,6 +2,7 @@ package com.main.map.models.additionalInformation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.main.getOpenData.DAO.Bilding;
 import com.main.getOpenData.DAO.BildingDao;
 import com.main.getOpenData.DAO.Kindergarden;
 import com.main.getOpenData.DAO.KindergardenDao;
@@ -28,7 +29,7 @@ public class AdditionalInfoKindergarden implements SpecificType {
         int distance = (int) AreaInformation.calculateDistance(centralPoint, pointKindergarden);
         int minDistance = Integer.MAX_VALUE;
         int maxDistance = Integer.MIN_VALUE;
-        Kindergarden currentKindergarden = new Kindergarden("none", "none", "none",new Date(2016-12-4),11);
+        Kindergarden currentKindergarden = new Kindergarden("none", "none", "none",new Date(2016-12-4),11,new Bilding(0,0));
         for (Kindergarden kindergarden : kindergardenDao.findAll()) {
             Point currentPoint = new Point(kindergarden.getBildingKindergarden().getLongitude(),
                     kindergarden.getBildingKindergarden().getLatitude());

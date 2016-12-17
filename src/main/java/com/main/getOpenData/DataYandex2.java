@@ -53,8 +53,7 @@ public class DataYandex2 {
             System.out.println(x.getName());
             Bilding bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(x.getLatitude(), x.getLongitude());
             Kindergarden kindergarden = new Kindergarden(x.getName(), x.getUrl(), x.getPhoneNumber(),
-                    new Date(Calendar.getInstance().getTime().getTime()), x.getIdFromSource());
-            kindergarden.setBildingKindergarden(bilding);
+                    new Date(Calendar.getInstance().getTime().getTime()), x.getIdFromSource(),bilding);
             kindergardenDao.save(kindergarden);
         }
         return true;
@@ -64,14 +63,18 @@ public class DataYandex2 {
         DataYandex dataYandex = new DataYandex(queryText, companyDao, companyTypeDao);
         String text = dataYandex.getData(strUrl, queryText, city);
         List<Company> companies = dataYandex.parseData(text);
+        System.out.println("companies : " + companies.size());
         List<Kindergarden> kindergardens = new LinkedList<>();
         for (Kindergarden kindergarden : kindergardenDao.findAll()) {
             kindergardens.add(kindergarden);
         }
+        System.out.println("kindergardens : " + kindergardens.size());
+        int count = 0;
         for (Company company : companies) {
             long idFromSource = company.getIdFromSource();
             for (Kindergarden kindergarden : kindergardens) {
                 if (idFromSource == kindergarden.getIdFromSource()) {
+                    count++;
                     if (!company.getName().equals(kindergarden.getName()) ||
                             !company.getUrl().equals(kindergarden.getUrl()) ||
                             !company.getPhoneNumber().equals(kindergarden.getPhone())) {
@@ -89,7 +92,9 @@ public class DataYandex2 {
                     kindergardenDao.save(kindergarden);
                 }
             }
+
         }
+        System.out.println("count: " + count);
         if (kindergardens.size() != companies.size()){
             if (kindergardens.size() < companies.size()){
                 for (Company company:companies) {
@@ -103,9 +108,10 @@ public class DataYandex2 {
                      if (!contain){
                          Bilding bilding = new Bilding(company.getLatitude(),company.getLongitude());
                          Bilding bilding1 = bildingDao.save(bilding);
+                         System.out.println("idFromSource " + company.getIdFromSource());
                          Kindergarden kindergarden = new Kindergarden(company.getName(),company.getUrl(),
                                  company.getPhoneNumber(),new Date(Calendar.getInstance().getTime().getTime()),
-                                 bilding1.getId());
+                                 company.getIdFromSource(),bilding1);
                          kindergardenDao.save(kindergarden);
                      }
                 }
