@@ -23,7 +23,10 @@ public class LoginController {
         AuthAnswer request = new AuthAnswer();
         request.setAuth(true);
         request.setError("none");
-        LastUpdate lastUpdate = new LastUpdate("12.06.16");
+        LastUpdate lastUpdate = new LastUpdate(
+                "обновление садов",
+                "обновление школ",
+                "обновление больниц");
         request.setLastUpdate(lastUpdate);
         System.out.println(gson.toJson(request));
         return gson.toJson(request);
@@ -38,6 +41,7 @@ public class LoginController {
         request.setRefreshed(true);
         return gson.toJson(request);
     }
+
     @RequestMapping(value = "/admin/loginCheck",
             method = RequestMethod.GET,
             produces = "application/json")
