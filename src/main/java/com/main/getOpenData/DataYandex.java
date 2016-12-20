@@ -61,119 +61,44 @@ public class DataYandex {
     public boolean writeDataToBD() {
         String strUrl = "https://search-maps.yandex.ru/v1/";
         String city = "Санкт-Петербург";
+        List<String> districts = new LinkedList<>();
+        districts.add("Центральный район");
+        districts.add("Московский район");
+        districts.add("Калининский район");
+        districts.add("Приморский район");
+        districts.add("Василеостровский район");
+        districts.add("Петроградский район");
+        districts.add("Красногвардейский район");
+        districts.add("Петродворцовый район");
+        districts.add("Фрунзенский район");
+        districts.add("Выборгский район");
+        districts.add("Невский район");
+        districts.add("Адмиралтейский район");
+        districts.add("Красносельский район");
+        districts.add("Кировский район");
+        districts.add("Кронштадский район");
+        districts.add("Курортный район");
+        districts.add("Пушкинский район");
+        districts.add("Колпинский район");
 
-        String text = getData(strUrl, queryText, city);
-        writeDataToFile(text);
-        List<Company> companies = parseData(text);
+        Set<Company> companies = new HashSet<>();
+//        for (String district : districts) {
+//            String text = getData(strUrl, queryText, city, district);
+//            //writeDataToFile(text);
+//            List<Company> partCompanies = parseData(text);
+//            for (Company company : partCompanies){
+//                companies.add(company);
+//            }
+//        }
+        System.out.println("Size : " + companies.size());
 //        companies.forEach(item -> System.out.println(item.getName()));
-        for (Company x : companies) {
-            companyDao.save(x);
+        for (Company company : companies) {
+            companyDao.save(company);
         }
         return true;
     }
 
-    public String getData(String urlToRead, String queryText, String city) {
-        URL url;
-        HttpURLConnection conn;
-        BufferedReader rd;
-        String line;
-        StringBuilder result = new StringBuilder();
 
-        try {
-            String queriURL = urlToRead + "?apikey=" + ACCESS_KEY + "&text=город " + city + ", " + queryText +
-                    "&lang=ru_RU" + "&results=5000" + "&type=biz";
-            url = new URL(queriURL);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            while ((line = rd.readLine()) != null) {
-                result.append(line);
-            }
-            rd.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result.toString();
-    }
-
-    public void writeDataToFile(String text) {
-        Path path = FileSystems.getDefault().getPath("E:\\GitJava\\BitBucket\\NC\\evaluator-hous\\files\\data.txt");
-        try (FileWriter writer = new FileWriter(path.toString(), false)) {
-            writer.write(text);
-            writer.flush();
-        } catch (IOException ex) {
-            System.err.println(ex.getMessage());
-        }
-    }
-
-    public List<Company> parseData(String strJson) {
-        JsonParser parser = new JsonParser();
-        JsonElement jsonElement = parser.parse(strJson);
-        JsonObject rootObject = jsonElement.getAsJsonObject(); // чтение главного объекта
-
-        JsonArray jsonElements = rootObject.getAsJsonArray("features");
-        Iterator it = jsonElements.iterator();
-        JsonObject childObject;
-        List<Company> listComp = new ArrayList<>(100);
-
-        while (it.hasNext()) {
-            childObject = (JsonObject) it.next();
-            JsonObject proterties = childObject.getAsJsonObject("properties");
-
-            JsonObject companyMetaData = proterties.getAsJsonObject("CompanyMetaData");
-            long idFromSource = companyMetaData.get("id").getAsLong();
-            String name = companyMetaData.get("name").getAsString();
-            String address = companyMetaData.get("address").getAsString();
-
-            String url = "";
-            if (companyMetaData.has("url")) {
-                url = companyMetaData.get("url").getAsString();
-            }
-
-            String phoneNumber = "";
-            if (companyMetaData.has("Phones")) {
-                JsonArray phones = companyMetaData.getAsJsonArray("Phones");
-                int count = 0;
-                for (Object phone1 : phones) {
-                    if (count ==0) {
-                        JsonObject phone = (JsonObject) phone1;
-                        phoneNumber += phone.get("formatted").getAsString();
-                        count++;
-                        continue;
-                    }
-                    if (count < 2) {
-                        phoneNumber +=" ; ";
-                        JsonObject phone = (JsonObject) phone1;
-                        phoneNumber += phone.get("formatted").getAsString();
-                        count++;
-                    }
-                }
-                phoneNumber = phoneNumber.substring(0,phoneNumber.length()-1);
-            }
-
-            String workTime = "";
-            if (companyMetaData.has("Hours")) {
-                JsonObject hours = companyMetaData.getAsJsonObject("Hours");
-                workTime = hours.get("text").getAsString();
-            }
-
-            JsonArray geometry = childObject.getAsJsonObject("geometry").getAsJsonArray("coordinates");
-            double[] coordinates = {geometry.get(0).getAsDouble(), geometry.get(1).getAsDouble()};
-
-            int idType = getIdType();
-            int parentId = getParentId();
-            String additionalInfo = "";
-
-            Point point = new Point(coordinates[0], coordinates[1]);
-            if (filterCoor(point)) {
-                Date date = new Date(Calendar.getInstance().getTime().getTime());
-                Company company = new Company(name, address, coordinates[0], coordinates[1], idType, parentId,
-                        date, url, phoneNumber, workTime, additionalInfo, idFromSource);
-                listComp.add(company);
-            }
-        }
-        return listComp;
-    }
 
     private int getIdType() {
         int id = 0;
@@ -236,12 +161,13 @@ public class DataYandex {
     poligon have form as triangle
      */
     private boolean filterCoor(Point point0) {
-        double[][] poligon = {{30.198626, 59.904942}, {30.191440, 59.967553}, {30.312437, 59.944409}};
-        double res1 = calculateExpression(point0, new Point(poligon[0][0], poligon[0][1]), new Point(poligon[1][0], poligon[1][1]));
-        double res2 = calculateExpression(point0, new Point(poligon[1][0], poligon[1][1]), new Point(poligon[2][0], poligon[2][1]));
-        double res3 = calculateExpression(point0, new Point(poligon[2][0], poligon[2][1]), new Point(poligon[0][0], poligon[0][1]));
-
-        return (res1 > 0 & res2 > 0 & res3 > 0 | res1 < 0 & res2 < 0 & res3 < 0);
+        return true;
+//        double[][] poligon = {{30.198626, 59.904942}, {30.191440, 59.967553}, {30.312437, 59.944409}};
+//        double res1 = calculateExpression(point0, new Point(poligon[0][0], poligon[0][1]), new Point(poligon[1][0], poligon[1][1]));
+//        double res2 = calculateExpression(point0, new Point(poligon[1][0], poligon[1][1]), new Point(poligon[2][0], poligon[2][1]));
+//        double res3 = calculateExpression(point0, new Point(poligon[2][0], poligon[2][1]), new Point(poligon[0][0], poligon[0][1]));
+//
+//        return (res1 > 0 & res2 > 0 & res3 > 0 | res1 < 0 & res2 < 0 & res3 < 0);
     }
 
     private double calculateExpression(Point point0, Point pointA, Point pointB) {

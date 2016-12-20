@@ -33,7 +33,7 @@ public class CompanyController {
     @RequestMapping(value = "/addKind")
     public String addKind() {
         String queryText = "детский сад";
-        DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao,bildingDao,
+        DataYandex2 dataYandex = new DataYandex2( companyDao, companyTypeDao,bildingDao,
                 kindergardenDao,schoolDao,medicalFacilityDao);
         boolean success = dataYandex.writeDataToBDKindergarden();
         if (success) return "success";
@@ -43,7 +43,7 @@ public class CompanyController {
     @RequestMapping(value = "/updateKind")
     public String updateKind() {
         String queryText = "детский сад";
-        DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao,bildingDao,
+        DataYandex2 dataYandex = new DataYandex2( companyDao, companyTypeDao,bildingDao,
                 kindergardenDao,schoolDao,medicalFacilityDao);
         boolean success = dataYandex.updateDataToBDKindergarden();
         if (success) return "success";
@@ -52,8 +52,7 @@ public class CompanyController {
 
     @RequestMapping(value = "/addMed")
     public String addMed() {
-        String queryText = "больница";
-        DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao,bildingDao,
+        DataYandex2 dataYandex = new DataYandex2(companyDao, companyTypeDao,bildingDao,
                 kindergardenDao,schoolDao,medicalFacilityDao);
         boolean success = dataYandex.writeToBDMed();
         if (success) return "success";
@@ -63,7 +62,7 @@ public class CompanyController {
     @RequestMapping(value = "/updateMed")
     public String updateMed() {
         String queryText = "больница";
-        DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao,bildingDao,
+        DataYandex2 dataYandex = new DataYandex2(companyDao, companyTypeDao,bildingDao,
                 kindergardenDao,schoolDao,medicalFacilityDao);
         boolean success = dataYandex.updateDataToBDMED();
         if (success) return "success";
@@ -73,7 +72,7 @@ public class CompanyController {
     @RequestMapping(value = "/addSchool")
     public String addSchool() {
         String queryText = "школа";
-        DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao, bildingDao,
+        DataYandex2 dataYandex = new DataYandex2(companyDao, companyTypeDao, bildingDao,
                 kindergardenDao, schoolDao, medicalFacilityDao);
         boolean success = dataYandex.writeToBDSchool();
 
@@ -84,7 +83,7 @@ public class CompanyController {
     @RequestMapping(value = "/updateSchool")
     public String updateSchool() {
         String queryText = "школа";
-        DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao,bildingDao,
+        DataYandex2 dataYandex = new DataYandex2(companyDao, companyTypeDao,bildingDao,
                 kindergardenDao,schoolDao,medicalFacilityDao);
         boolean success = dataYandex.updateDataToBDSchool();
         if (success) return "success";
