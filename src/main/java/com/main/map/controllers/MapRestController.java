@@ -7,6 +7,8 @@ import com.main.map.models.areaInformation.AreaInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Calendar;
+
 @RestController
 @RequestMapping("/api")
 public class MapRestController {
@@ -24,6 +26,8 @@ public class MapRestController {
         System.out.println("type: " + type);
         System.out.println("houseLat: " + houseLat);
         System.out.println("houseLng: " + houseLng);
+        System.out.println("radius: " + radius);
+        long start = Calendar.getInstance().getTimeInMillis();
         Point centralPoint = new Point(houseLng,houseLat);
         Point currentPoint = new Point(lng,lat);
 
@@ -43,14 +47,20 @@ public class MapRestController {
                 break;
         }
         String result = context.getAddInfo(centralPoint,currentPoint,radius);
+        long stop = Calendar.getInstance().getTimeInMillis();
+        System.out.println("Time query processing /get_info : " + (stop-start)/1_000 + " seconds");
         return result;
     }
 
     @PostMapping(value = "/get_query")
     public String  PostAreaInformation(@RequestBody String jsonQueryStr) {
+        long start = Calendar.getInstance().getTimeInMillis();
         AreaInformation areaInformation = new AreaInformation(bildingDao, metroDao, districtDao,kindergardenDao,
                 medicalFacilityDao, parkingDao,schoolDao);
-        return areaInformation.requestHandling(jsonQueryStr);
+        String result = areaInformation.requestHandling(jsonQueryStr);
+        long stop = Calendar.getInstance().getTimeInMillis();
+        System.out.println("Time query processing /get_query : " + (stop-start)/1_000 + " seconds");
+        return result;
     }
 
 

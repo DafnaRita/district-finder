@@ -11,68 +11,84 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class CompanyController {
 
-
-    @RequestMapping(value = "/metro")
-    public String metro() {
-//        WorkWithBilding workWithBilding = new WorkWithBilding(bildingDao);
-//        for (Metro1 node : metro1Dao.findAll()) {
-//            long idBilding = workWithBilding.getOrWriteBilding(node.getLongitude(),node.getLatitude());
-//            metroDao.save(new Metro(idBilding, node.getName(),node.getColorLine()));
-//        }
+    @RequestMapping(value = "/addMetro")
+    public String addMetro() {
+        WorkWithBilding workWithBilding = new WorkWithBilding(bildingDao);
+        for (Metro1 node : metro1Dao.findAll()) {
+            Bilding bilding = workWithBilding.getOrWriteBilding(node.getLongitude(),node.getLatitude());
+            Metro metro = new Metro(node.getName(),node.getColorLine());
+            metro.setBildingMetro(bilding);
+            metroDao.save(metro);
+        }
         return "success";
     }
 
-    @RequestMapping(value = "/parking")
-    public String parking() {
+    @RequestMapping(value = "/addParking")
+    public String addParking() {
         DataGovSpb dataGovSpb = new DataGovSpb(parkingDao,bildingDao);
         dataGovSpb.getData();
         return "success";
     }
 
-    @RequestMapping(value = "/kind")
-    public String kind() {
-//        String queryText = "детский сад";
-//        String queryText = "школа";
-        String queryText = "больница";
-        DataYandex2 dataYandex = new DataYandex2(queryText, companyDao, companyTypeDao,bildingDao,
+    @RequestMapping(value = "/addKind")
+    public String addKind() {
+        String queryText = "детский сад";
+        DataYandex2 dataYandex = new DataYandex2( companyDao, companyTypeDao,bildingDao,
                 kindergardenDao,schoolDao,medicalFacilityDao);
-//        boolean success = dataYandex.writeDataToBDKindergarden();
-//        boolean success = dataYandex.writeToBDSchool();
-        boolean success = dataYandex.writeToBDMed();
-
-//        String queryText = "Детский са";
-//        String queryTextEng = "hospitals";
-//        int companyTypeId = 6;
-//      /*  Iterator<CompanyType> iterator = companyTypeDao.findAll().iterator();
-//        while (iterator.hasNext()) {
-//            CompanyType companyType = iterator.next();
-//            if (queryTextEng.equals(companyType.getName())) {
-//                queryText = translate(queryTextEng);
-//                companyTypeId = companyType.getId();
-//                break;
-//            }
-//        }*/
-
-//        DataYandex dataYandex = new DataYandex(queryText, companyTypeId);
-//        List<Company> list = dataYandex.getCompanies();
-
-        /*for (Company x : list) {
-            companyDao.save(x);
-        }*/
+        boolean success = dataYandex.writeDataToBDKindergarden();
         if (success) return "success";
         else return "Problems!";
     }
 
-//    private String translate(String textEng) {
-//        String[][] translation = {{"parks", "парк"}, {"malls", "торговый центр"}, {"schools", "школа"}, {"sportCenters", "спортивный центр"},
-//                {"rest", "отдых"}, {"hospitals", "больница"}, {"kindergarten", "детский сад"}};
-//        for (String[] x : translation) {
-//            if (textEng.equals(x[0])) {
-//                return x[1];
-//            }
-//        }
-//        return null;
-//    }
+    @RequestMapping(value = "/updateKind")
+    public String updateKind() {
+        String queryText = "детский сад";
+        DataYandex2 dataYandex = new DataYandex2( companyDao, companyTypeDao,bildingDao,
+                kindergardenDao,schoolDao,medicalFacilityDao);
+        boolean success = dataYandex.updateDataToBDKindergarden();
+        if (success) return "success";
+        else return "Problems!";
+    }
+
+    @RequestMapping(value = "/addMed")
+    public String addMed() {
+        DataYandex2 dataYandex = new DataYandex2(companyDao, companyTypeDao,bildingDao,
+                kindergardenDao,schoolDao,medicalFacilityDao);
+        boolean success = dataYandex.writeToBDMed();
+        if (success) return "success";
+        else return "Problems!";
+    }
+
+    @RequestMapping(value = "/updateMed")
+    public String updateMed() {
+        String queryText = "больница";
+        DataYandex2 dataYandex = new DataYandex2(companyDao, companyTypeDao,bildingDao,
+                kindergardenDao,schoolDao,medicalFacilityDao);
+        boolean success = dataYandex.updateDataToBDMED();
+        if (success) return "success";
+        else return "Problems!";
+    }
+
+    @RequestMapping(value = "/addSchool")
+    public String addSchool() {
+        String queryText = "школа";
+        DataYandex2 dataYandex = new DataYandex2(companyDao, companyTypeDao, bildingDao,
+                kindergardenDao, schoolDao, medicalFacilityDao);
+        boolean success = dataYandex.writeToBDSchool();
+
+        if (success) return "success";
+        else return "Problems!";
+    }
+
+    @RequestMapping(value = "/updateSchool")
+    public String updateSchool() {
+        String queryText = "школа";
+        DataYandex2 dataYandex = new DataYandex2(companyDao, companyTypeDao,bildingDao,
+                kindergardenDao,schoolDao,medicalFacilityDao);
+        boolean success = dataYandex.updateDataToBDSchool();
+        if (success) return "success";
+        else return "Problems!";
+    }
 
     @Autowired
     private CompanyDao companyDao;

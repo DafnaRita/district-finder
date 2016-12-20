@@ -68,7 +68,7 @@ public class AreaInformation {
 
     private int calculateEstimate(ArrayList<Infrastructure> infrastructures) {
         System.out.println("in calculateEstimate");
-        int estimate = 0;
+        double estimate = 0;
         int count = 0;
         for (int i = 0; i < areaQuery.getEstimateParams().size(); i++) {
             int type = areaQuery.getEstimateParam(i).getType();
@@ -87,8 +87,8 @@ public class AreaInformation {
             }
 
             count++;
-            int d = (int)((distance-0.000001)*5/areaQuery.getRadius() +1);
-            estimate += areaQuery.getEstimateParam(i).getImportance()/d;
+            double d = (((distance-0.000001)/areaQuery.getRadius())/2 +1);
+            estimate += areaQuery.getEstimateParam(i).getImportance()/d*5/2;
 //            estimate += ((int)((distance-0.0000001)*5 / areaQuery.getRadius())+1)*areaQuery.getEstimateParam(i).getImportance();
             System.out.println("d: " + d);
             System.out.println("estimate: " + estimate);
@@ -96,7 +96,7 @@ public class AreaInformation {
         }
        /*надо придумать */
        if (count == 0) return 0;
-        return round(estimate / count);
+        return (int)round(estimate / count);
     }
 
     private String createAnswerJson() {
@@ -341,6 +341,7 @@ public class AreaInformation {
         for (Metro node : dequeMetroNear) {
             Point nodePoint = new Point(node.getBildingMetro().getLongitude(),node.getBildingMetro().getLatitude());
             int realDistance = (int) calculateDistance(selectedPoint, nodePoint);
+            System.out.println("distance: " + distance);
             result.add(new MetroJSON(node.getName(), realDistance, node.getColorLine()));
         }
         result.forEach((item -> System.out.println(item.getName() + " : " + item.getDistance())));

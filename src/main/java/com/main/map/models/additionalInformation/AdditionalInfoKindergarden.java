@@ -2,6 +2,7 @@ package com.main.map.models.additionalInformation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.main.getOpenData.DAO.Bilding;
 import com.main.getOpenData.DAO.BildingDao;
 import com.main.getOpenData.DAO.Kindergarden;
 import com.main.getOpenData.DAO.KindergardenDao;
@@ -10,6 +11,7 @@ import com.main.map.models.JSONclasses.KindergardenJSON;
 import com.main.map.models.areaInformation.AreaInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.Date;
 import java.util.List;
 
 public class AdditionalInfoKindergarden implements SpecificType {
@@ -25,9 +27,9 @@ public class AdditionalInfoKindergarden implements SpecificType {
     @Override
     public String createAdditionalInfo(Point centralPoint, Point pointKindergarden, int radius) {
         int distance = (int) AreaInformation.calculateDistance(centralPoint, pointKindergarden);
-        int minDistance = Integer.MIN_VALUE;
-        int maxDistance = Integer.MAX_VALUE;
-        Kindergarden currentKindergarden = new Kindergarden("none", "none", "none");
+        int minDistance = Integer.MAX_VALUE;
+        int maxDistance = Integer.MIN_VALUE;
+        Kindergarden currentKindergarden = new Kindergarden("none", "none", "none",new Date(2016-12-4),11,new Bilding(0,0));
         for (Kindergarden kindergarden : kindergardenDao.findAll()) {
             Point currentPoint = new Point(kindergarden.getBildingKindergarden().getLongitude(),
                     kindergarden.getBildingKindergarden().getLatitude());
@@ -39,7 +41,7 @@ public class AdditionalInfoKindergarden implements SpecificType {
             if (minDistance > currentDistance){
                 minDistance = currentDistance;
             }
-            if (maxDistance < radius & maxDistance < currentDistance){
+            if (currentDistance < radius & maxDistance < currentDistance){
                 maxDistance = currentDistance;
             }
         }
@@ -47,7 +49,7 @@ public class AdditionalInfoKindergarden implements SpecificType {
                 AreaInformation.getYandexGeocodeJSON(new double[]{pointKindergarden.getLongitude(), pointKindergarden.getLatitude()}));
 
         KindergardenJSON kindergardenJSON =
-                new KindergardenJSON(currentKindergarden.getName(),address, currentKindergarden.getPhone(), currentKindergarden.getUrl(),
+                new KindergardenJSON(currentKindergarden.getName(),address, currentKindergarden.getUrl(), currentKindergarden.getPhone(),
                         distance,minDistance,maxDistance);
         Gson gson = new GsonBuilder().create();
         String str = gson.toJson(kindergardenJSON);
