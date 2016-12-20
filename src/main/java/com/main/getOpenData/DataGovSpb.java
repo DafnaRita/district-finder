@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class DataGovSpb {
@@ -105,8 +107,10 @@ public class DataGovSpb {
     }
 
     private void writeToBD(Point point, int parkingSpace, int area, String type) {
-        long idBilding = new WorkWithBilding(bildingDao).getOrWriteBilding(point.getLongitude(),point.getLatitude());
-        parkingDao.save(new Parking(type,idBilding,parkingSpace,area));
+        Bilding bilding = new WorkWithBilding(bildingDao).getOrWriteBilding(point.getLatitude(),point.getLongitude());
+        Parking parking = new Parking(type,parkingSpace,area,new Date(Calendar.getInstance().getTime().getTime()));
+        parking.setBildingParking(bilding);
+        parkingDao.save(parking);
     }
 
     private Point getPointFromYandex(String address) {

@@ -2,51 +2,60 @@ package com.main.getOpenData.DAO;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Entity
-@Table(name = "bilding")
-public class Bilding {
+@Table(name = "metro1")
+public class Metro1 {
+
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
-    @NotNull
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "lng")
     private double longitude;
 
-    @NotNull
     @Column(name = "lat")
     private double latitude;
 
-    @OneToMany(mappedBy = "bildingMetro")
-    private List<Metro> metro;
+    @Column(name = "color_line")
+    private int colorLine;
 
-    @OneToMany(mappedBy = "bildingParking")
-    private List<Parking> parkings;
-
-    public Bilding(double longitude, double latitude) {
-        this.longitude = longitude;
-        this.latitude = latitude;
+    public Metro1() {
     }
 
-    public Bilding() {
+    public Metro1(String name, double longitude, double latitude, int colorLine) {
+        this.name = name;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.colorLine = colorLine;
     }
 
     public long getId() {
         return id;
     }
 
-
+    @PersistenceContext
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @PersistenceContext
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getLongitude() {
         return longitude;
     }
 
-
+    @PersistenceContext
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
@@ -55,24 +64,17 @@ public class Bilding {
         return latitude;
     }
 
-
+    @PersistenceContext
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public List<Metro> getMetro() {
-        return metro;
+    public int getColorLine() {
+        return colorLine;
     }
 
-    public void setMetro(List<Metro> metro) {
-        this.metro = metro;
-    }
-
-    public List<Parking> getParkings() {
-        return parkings;
-    }
-
-    public void setParkings(List<Parking> parkings) {
-        this.parkings = parkings;
+    @PersistenceContext
+    public void setColorLine(int colorLine) {
+        this.colorLine = colorLine;
     }
 }

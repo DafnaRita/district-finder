@@ -3,12 +3,15 @@ package com.main.map.models.additionalInformation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.main.getOpenData.DAO.Bilding;
 import com.main.getOpenData.DAO.BildingDao;
 import com.main.getOpenData.DAO.MedicalFacility;
 import com.main.getOpenData.DAO.MedicalFacilityDao;
+import com.main.getOpenData.Point;
 import com.main.map.models.JSONclasses.MedicalFacilityJSON;
 import com.main.map.models.areaInformation.AreaInformation;
 
+import java.sql.Date;
 import java.util.List;
 
 public class AdditionalInfoMedicalFacility implements SpecificType {
@@ -22,26 +25,34 @@ public class AdditionalInfoMedicalFacility implements SpecificType {
     }
 
     @Override
-    public String createAdditionalInfo(double lat, double lng, int distance) {
-        long id = bildingDao.findByLatLng(lat, lng);
-        List<MedicalFacility> listmedicalFacility = medicalFacilityDao.findByIdBilding(id);
-        for (MedicalFacility x : listmedicalFacility) {
-            System.out.println(x.getName());
+    public String createAdditionalInfo(Point centralPoint, Point pointMed, int radius) {
+        int distance = (int) AreaInformation.calculateDistance(centralPoint, pointMed);
+        int minDistance = Integer.MAX_VALUE;
+        int maxDistance = Integer.MIN_VALUE;
+        MedicalFacility currentMed = new MedicalFacility("none", "none", "none",new Date(2016-12-4),11,new Bilding());
+        for (MedicalFacility medicalFacility : medicalFacilityDao.findAll()) {
+            Point currentPoint = new Point(medicalFacility.getBildingMed().getLongitude(),medicalFacility.getBildingMed().getLatitude());
+            if (medicalFacility.getBildingMed().getLongitude() == pointMed.getLongitude() &
+                    medicalFacility.getBildingMed().getLatitude()== pointMed.getLatitude()){
+                currentMed = medicalFacility;
+            }
+            int currentDistance = (int) AreaInformation.calculateDistance(centralPoint, currentPoint);
+            if (minDistance > currentDistance){
+                minDistance = currentDistance;
+            }
+            if (currentDistance < radius & maxDistance < currentDistance){
+                maxDistance = currentDistance;
+            }
         }
-        MedicalFacility medicalFacility;
-        if (listmedicalFacility.size() != 0) {
-            medicalFacility = listmedicalFacility.get(0);
-            System.out.println("id: " + medicalFacility.getId() + " : " + medicalFacility.getName());
-        } else medicalFacility = new MedicalFacility(123,"non","non","none");
-        String address = AreaInformation.parseDataForGeoObject(AreaInformation.getYandexGeocodeJSON(new double[]{lng, lat}));
-        System.out.println("address: " + address);
-        MedicalFacilityJSON medicalFacilityJSON =
-                new MedicalFacilityJSON(medicalFacility.getName(),address, medicalFacility.getUrl(),
-                        medicalFacility.getPhone(), distance);
+        String address = AreaInformation.parseDataForGeoObject(
+                AreaInformation.getYandexGeocodeJSON(new double[]{pointMed.getLongitude(), pointMed.getLatitude()}));
+
+        MedicalFacilityJSON medicalFacilityJSONJSON =
+                new MedicalFacilityJSON(currentMed.getName(),address, currentMed.getUrl(), currentMed.getPhone(),
+                        distance,minDistance,maxDistance);
         Gson gson = new GsonBuilder().create();
-        String str = gson.toJson(medicalFacilityJSON);
+        String str = gson.toJson(medicalFacilityJSONJSON);
         System.out.println(str);
         return str;
-
     }
 }

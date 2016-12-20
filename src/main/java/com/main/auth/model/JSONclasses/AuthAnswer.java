@@ -1,15 +1,22 @@
 package com.main.auth.model.JSONclasses;
 
-/**
- * Created by Margo on 28.11.2016.
- */
 public class AuthAnswer {
     private boolean isAuth;
     private String error;
+    private LastUpdate lastUpdate;
 
-    public AuthAnswer(boolean isAuth, String error) {
+    public LastUpdate getLastUpdate() {
+        return this.lastUpdate;
+    }
+
+    public void setLastUpdate(LastUpdate lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    public AuthAnswer(boolean isAuth, String error, LastUpdate lastUpdate) {
         this.isAuth = isAuth;
         this.error = error;
+        this.lastUpdate = lastUpdate;
     }
 
     public String getError() {

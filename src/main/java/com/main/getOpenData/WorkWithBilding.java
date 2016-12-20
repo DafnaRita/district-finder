@@ -12,18 +12,17 @@ public class WorkWithBilding {
         this.bildingDao = bildingDao;
     }
 
-    public long getOrWriteBilding(double lon, double lat){
-        long id_bilding = 0;
+    public Bilding getOrWriteBilding(double lon, double lat){
+        Bilding resultBilding = null;
         for (Bilding bilding : bildingDao.findAll()) {
             if (bilding.getLatitude() == lat & bilding.getLongitude() == lon){
-                id_bilding = bilding.getId();
+                resultBilding = bilding;
                 break;
             }
         }
-        if(id_bilding == 0) {
-            Bilding bilding = bildingDao.save(new Bilding(lon, lat));
-            id_bilding = bilding.getId();
+        if(resultBilding == null ) {
+           resultBilding = bildingDao.save(new Bilding(lon, lat));
         }
-        return id_bilding;
+        return resultBilding;
     }
 }

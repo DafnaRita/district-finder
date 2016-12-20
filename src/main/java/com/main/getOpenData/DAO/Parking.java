@@ -1,6 +1,7 @@
 package com.main.getOpenData.DAO;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
 @Table(name = "parking")
@@ -9,8 +10,8 @@ public class Parking  {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
-    @Column(name = "id_bilding")
-    private long idBilding;
+//    @Column(name = "id_bilding")
+//    private long idBilding;
 
     @Column(name = "count_place")
     private int countPlace;
@@ -19,16 +20,24 @@ public class Parking  {
     private int area;
 
     @Column(name = "type")
-    private String type;
+    private String parkingType;
+
+    @Column(name = "date")
+    private Date date;
+
+    @ManyToOne
+    @JoinColumn(name = "id_bilding")
+    private Bilding bildingParking;
 
     public Parking() {
     }
 
-    public Parking(String type, long idBilding, int countPlace, int area) {
-        this.idBilding = idBilding;
+    public Parking(String type, int countPlace, int area, Date date) {
+
         this.countPlace = countPlace;
         this.area = area;
-        this.type = type;
+        this.parkingType = type;
+        this.date = date;
     }
 
     public long getId() {
@@ -37,14 +46,6 @@ public class Parking  {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getIdBilding() {
-        return idBilding;
-    }
-
-    public void setIdBilding(int idBilding) {
-        this.idBilding = idBilding;
     }
 
     public int getCountPlace() {
@@ -63,11 +64,27 @@ public class Parking  {
         this.area = area;
     }
 
-    public String getType() {
-        return type;
+    public String getParkingType() {
+        return parkingType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setParkingType(String parkingType) {
+        this.parkingType = parkingType;
+    }
+
+    public Bilding getBildingParking() {
+        return bildingParking;
+    }
+
+    public void setBildingParking(Bilding bildingParking) {
+        this.bildingParking = bildingParking;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }
